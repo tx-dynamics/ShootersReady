@@ -1,0 +1,11 @@
+export const dp = require('./images/user.jpg');
+export const akm = require('./images/akm.png');
+export const m416 = require('./images/m416.png');
+export const shot = require('./images/shot.png');
+export const tommy = require('./images/tommy.png');
+export const scral = require('./images/scral.png');
+export const bullet = require('./images/bullet.png');
+export const logo = require('./images/logo.png');
+export const profile = require('./images/profile.png');
+export const user = require('./images/user.jpg');
+export const button = require('./images/button.jpg');

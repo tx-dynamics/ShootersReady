@@ -22,11 +22,14 @@ import {button, user} from '../../assets';
 import HeaderCenterComponent from '../../components/HeaderCenterComponent';
 import HeaderLeftComponent from '../../components/HeaderLeftComponent';
 import LinearGradient from 'react-native-linear-gradient';
+import Mailer from 'react-native-mail';
+import RNHTMLtoPDF from 'react-native-html-to-pdf';
 export default class GunInventDetail extends Component {
   constructor(props) {
     super(props);
     this.state = {
       upimg: '',
+      ms: [],
       gid: '',
       make: 'Germany',
       img: '',
@@ -50,11 +53,92 @@ export default class GunInventDetail extends Component {
   componentDidMount() {
     this.getData();
   }
+  async htmltopdf() {
+    let options = {
+      // HTML Content for PDF.
+      // I am putting all the HTML code in Single line but if you want to use large HTML code then you can use + Symbol to add them.
+      html: `<h1 style="text-align: center;"><strong>Shooters Ready</strong></h1>
+      <p style=" font-family: courier;",
+     " font-family: verdana;",
+      "font-size: 80%;",
+      "margin-left:10%;">Gun Model: ${this.state.model}</p>
+      <p style=" font-family: courier;",
+      " font-family: verdana;",
+       "font-size: 80%;",
+       "margin-left:10%;">Gun Make: ${this.state.model}</p>
+       <p style=" font-family: courier;",
+       " font-family: verdana;",
+        "font-size: 80%;",
+        "margin-left:10%;">Gun Status: ${this.state.status}</p>
+       <p style=" font-family: courier;",
+       " font-family: verdana;",
+        "font-size: 80%;",
+        "margin-left:10%;">Gun Caliber: ${this.state.caliber}</p>
+        <p style=" font-family: courier;",
+        " font-family: verdana;",
+         "font-size: 80%;",
+         "margin-left:10%;">Gun Serial: ${this.state.serial}</p>
+         <p style=" font-family: courier;",
+         " font-family: verdana;",
+          "font-size: 80%;",
+          "margin-left:10%;">Gun Optic: ${this.state.optic}</p>
+          <p style=" font-family: courier;",
+          " font-family: verdana;",
+           "font-size: 80%;",
+           "margin-left:10%;">Rounds Fired: ${this.state.fire}</p>
+           <p style=" font-family: courier;",
+           " font-family: verdana;",
+            "font-size: 80%;",
+            "margin-left:10%;">Rounds on Hands: ${this.state.hand}</p>
+            <p style=" font-family: courier;",
+            " font-family: verdana;",
+             "font-size: 80%;",
+             "margin-left:10%;">Where it Purchased: ${this.state.Where}</p>
+             <p style=" font-family: courier;",
+             " font-family: verdana;",
+              "font-size: 80%;",
+              "margin-left:10%;">When Purchased: ${this.state.whenPurchase}</p>
+              <p style=" font-family: courier;",
+              " font-family: verdana;",
+               "font-size: 80%;",
+               "margin-left:10%;">Barrel Length: ${this.state.bLength}</p>
+               <p style=" font-family: courier;",
+               " font-family: verdana;",
+                "font-size: 80%;",
+                "margin-left:10%;">Barrel Twist: ${this.state.bTwist}</p>
+                <p style=" font-family: courier;",
+                " font-family: verdana;",
+                 "font-size: 80%;",
+                 "margin-left:10%;">Barrel Manufacture: ${this.state.bManu}</p>
+                 <p style=" font-family: courier;",
+                 " font-family: verdana;",
+                  "font-size: 80%;",
+                  "margin-left:10%;">Notes: ${this.state.details}</p>
+      `,
+      fileName: `${this.state.serial}`,
+
+      //File directory in which the PDF File Will Store.
+      directory: 'Download',
+    };
+
+    let file = await RNHTMLtoPDF.convert(options);
+
+    console.log(file);
+
+    Snackbar.show({
+      text: `Pdf is stored in ${file.filePath}`,
+      backgroundColor: 'black',
+      duration: Snackbar.LENGTH_LONG,
+    });
+
+    this.setState({filePath: file.filePath, show: true});
+    this.handleHelp(filePath);
+  }
   dataLoad(id) {
     const {gid} = this.state;
     this.setState({imgid: id});
     const user = auth().currentUser.uid;
-    console.log('G_id', id);
+
     const data = database().ref('users/' + user + '/gun/' + id + '/data');
     data.on('value', userdata => {
       var li = [];
@@ -67,6 +151,33 @@ export default class GunInventDetail extends Component {
       this.setState({loadData: li});
     });
     // this.updateImg(id);
+  }
+  handleHelp(file) {
+    console.log('HERE');
+    // var file = this.state.filePath;
+    console.log('HERE', JSON.stringify(file));
+    Mailer.mail(
+      {
+        subject: 'Shooter Ready',
+        // recipients: ['malikmati49@gmail.com'],
+        attachment: [
+          {
+            // uri: RNFS.ExternalDirectoryPath+file,
+            path: file, // The absolute path of the file from which to read data.
+            type: '.pdf', // Mime Type: jpg, png, doc, ppt, html, pdf
+            name: 'Shooter Ready', // Optional: Custom filename for attachment
+          },
+        ],
+      },
+      (error, event) => {
+        if (error) {
+          AlertIOS.alert(
+            'Error',
+            'Could not send mail. Please send a mail to support@example.com',
+          );
+        }
+      },
+    );
   }
 
   getData() {
@@ -88,7 +199,7 @@ export default class GunInventDetail extends Component {
       gid: data.id,
       upimg: data.img,
     });
-    console.log('data====>', data.id);
+    console.log('data====>', data);
     this.dataLoad(data.id);
   }
   imgePicker = async () => {
@@ -613,7 +724,24 @@ export default class GunInventDetail extends Component {
               imageStyle={{borderRadius: 10}}>
               <TouchableOpacity
                 // style={{width: '40%'}}
-                onPress={() => this.props.navigation.navigate('MissingReport')}>
+                onPress={() =>
+                  this.props.navigation.navigate('MissingReport', {
+                    make,
+                    model,
+                    serial,
+                    caliber,
+                    serial,
+                    optic,
+                    fire,
+                    hand,
+                    whenPurchase,
+                    Where,
+                    bLength,
+                    bManu,
+                    bTwist,
+                    notes,
+                  })
+                }>
                 <Text
                   style={{
                     color: 'white',
@@ -636,7 +764,7 @@ export default class GunInventDetail extends Component {
               }}
               source={button}
               imageStyle={{borderRadius: 10}}>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={() => this.htmltopdf()}>
                 <Text
                   style={{
                     color: 'white',

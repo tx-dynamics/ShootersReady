@@ -17,32 +17,45 @@ import {Header, Divider} from 'react-native-elements';
 import {button} from '../../assets';
 import HeaderCenterComponent from '../../components/HeaderCenterComponent';
 import HeaderLeftComponent from '../../components/HeaderLeftComponent';
+import {bullets} from './bullets';
 export default class BulletCalculator extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      bulletcal: [
-        {id: 'Bullet Caliber', no: 'Bullet Caliber'},
-        {id: '.45', no: '.45'},
-        {id: '7.76', no: '7.76'},
-        {id: '5.56', no: '5.56'},
-      ],
-      bname: [
-        {id: 'Bullet Name', no: 'Bullet Name'},
-        {id: 'M416', no: 'M416'},
-        {id: 'AKM', no: 'AKM'},
-        {id: 'AWM', no: 'AWM'},
-      ],
+      bulletcal: bullets,
+      bname: [],
       storeArr: [],
       name: '',
       filter: '',
       coefficient: '.015',
       velocity: '1850',
       bweight: '20',
+      values: {
+        distanceUnits: 'Yards',
+        distance: '500',
+        chartStepping: '50',
+        sizeInches: '1.5',
+        sizeMils: '0',
+        slantDegrees: '0',
+        speedMPH: '0',
+      },
+      distance: '',
     };
   }
+
   setInput = value => {
     this.setState({filter: value});
+    console.log(value);
+    const data = this.state.bulletcal.map(item => {
+      if (item.id === value) {
+        this.setState({
+          bname: [{id: item.id, no: item.name}],
+          coefficient: item.coeff,
+          velocity: item.velocity,
+          bweight: item.grains,
+        });
+      }
+    });
   };
 
   render() {
@@ -142,7 +155,7 @@ export default class BulletCalculator extends Component {
                         return (
                           <Picker.Item
                             key={index}
-                            label={item.no}
+                            label={item.bcaliber}
                             value={item.id}
                           />
                         );
@@ -150,7 +163,7 @@ export default class BulletCalculator extends Component {
                         return (
                           <Picker.Item
                             key={index}
-                            label={item.no}
+                            label={item.bcaliber}
                             value={item.id}
                           />
                         );

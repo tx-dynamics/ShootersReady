@@ -100,7 +100,7 @@ class EditProfile extends Component {
       xhr.send(null); // no initial data
     });
     var timestamp = new Date().getTime();
-    var imageRef = storage().ref(`users/UserImage/` + timestamp + '/');
+    var imageRef = storage().ref('users/UserImage/' + timestamp + '/');
 
     return imageRef
       .put(blob)

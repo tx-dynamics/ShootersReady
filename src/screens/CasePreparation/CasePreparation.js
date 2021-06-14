@@ -694,7 +694,8 @@ export default class CasePreparation extends Component {
                   padding: 20,
                   textAlign: 'center',
                   // borderRadius: 5,
-                }}></Text>
+                }}
+              />
             </TouchableOpacity>
 
             <ImageBackground

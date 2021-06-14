@@ -1177,7 +1177,8 @@ export default class GunLoadData extends Component {
                   padding: 20,
                   textAlign: 'center',
                   // borderRadius: 5,
-                }}></Text>
+                }}
+              />
             </TouchableOpacity>
 
             <ImageBackground

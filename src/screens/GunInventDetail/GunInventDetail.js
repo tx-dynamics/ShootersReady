@@ -238,7 +238,7 @@ export default class GunInventDetail extends Component {
       xhr.send(null); // no initial data
     });
     var timestamp = new Date().getTime();
-    var imageRef = storage().ref(`users/gun/` + timestamp + '/');
+    var imageRef = storage().ref('users/gun/' + timestamp + '/');
 
     return imageRef
       .put(blob)

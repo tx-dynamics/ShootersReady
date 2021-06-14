@@ -136,7 +136,7 @@ export default class BulletGraph extends Component {
               textAlign: 'center',
               // width: '16.33%',
             }}>
-            {`Drop \n (inches)`}
+            {'Drop \n (inches)'}
           </Text>
           <Text
             style={{
@@ -163,7 +163,7 @@ export default class BulletGraph extends Component {
               borderLeftWidth: 1,
               textAlign: 'center',
             }}>
-            {`Wind Drift \n (inches)`}
+            {'Wind Drift \n (inches)'}
           </Text>
           <Text
             style={{
@@ -172,7 +172,7 @@ export default class BulletGraph extends Component {
               borderLeftWidth: 1,
               textAlign: 'center',
             }}>
-            {`Time \n milisecond`}
+            {'Time \n milisecond'}
           </Text>
         </View>
         <View
@@ -180,7 +180,8 @@ export default class BulletGraph extends Component {
             bottom: 0,
             // position: 'absolute',
             height: Dimensions.get('screen').height / 7,
-          }}></View>
+          }}
+        />
         <TouchableOpacity
           onPress={() => this.props.navigation.navigate('BulletCalculator')}
           style={{

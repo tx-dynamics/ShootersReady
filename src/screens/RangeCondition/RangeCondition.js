@@ -578,7 +578,8 @@ export default class RangeCondition extends Component {
                       alignSelf: 'center',
                       // textAlign: 'center',
                       // borderRadius: 5,
-                    }}></Text>
+                    }}
+                  />
                 </TouchableOpacity>
               )}
             </View>

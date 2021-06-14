@@ -61,7 +61,8 @@ class Content extends Component {
           <ImageBackground
             source={logo}
             style={styles.userIcon}
-            imageStyle={{borderRadius: 40}}></ImageBackground>
+            imageStyle={{borderRadius: 40}}
+          />
           <View style={{flexDirection: 'row'}}>
             <TouchableOpacity
               onPress={() => this.props.navigation.navigate('Main')}

@@ -267,7 +267,7 @@ export default class ShowNotes extends Component {
                   </Text>
                 </TouchableOpacity>
               ) : (
-                <Text></Text>
+                <Text />
               )}
             </ImageBackground>
           </View>

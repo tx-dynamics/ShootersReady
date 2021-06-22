@@ -14,7 +14,6 @@ import {Grid, LineChart, XAxis, YAxis} from 'react-native-svg-charts';
 import React, {Component} from 'react';
 
 import {DataTable} from 'react-native-paper';
-import {Dimensions} from 'react-native';
 import HeaderCenterComponent from '../../components/HeaderCenterComponent';
 import HeaderLeftComponent from '../../components/HeaderLeftComponent';
 import LinearGradient from 'react-native-linear-gradient';
@@ -78,11 +77,19 @@ export default class BulletGraph extends Component {
         -503.98,
         -533.31,
       ],
+      tableRows: [],
     };
+  }
+  componentDidMount() {
+    const tableRows = this.props.navigation.getParam('tableRows');
+    console.log('New data', tableRows?.tableRows);
+    this.setState({
+      line: tableRows?.ballisticsDatasets[0]?.data,
+      tableRows: tableRows?.tableRows,
+    });
   }
 
   render() {
-    console.log(this.props.tableRows);
     const data = [
       -1.5,
       -0.17,
@@ -137,7 +144,7 @@ export default class BulletGraph extends Component {
       -533.31,
     ];
     return (
-      <View style={{flex: 1, backgroundColor: 'white'}}>
+      <ScrollView style={{flex: 1, backgroundColor: 'white'}}>
         <Header
           backgroundColor={'white'}
           containerStyle={{borderBottomWidth: 0}}
@@ -203,18 +210,33 @@ export default class BulletGraph extends Component {
           svg={{fontSize: 10, fill: 'black'}}
         />
         <DataTable>
-          <DataTable.Header>
+          <DataTable.Header
+            style={{
+              backgroundColor: 'skyblue',
+              width: '98%',
+              alignItems: 'space-around',
+              alignSelf: 'center',
+            }}>
             <DataTable.Title>Range</DataTable.Title>
-            <DataTable.Title numeric>Drop (inches)</DataTable.Title>
+            <DataTable.Title numeric>Drop(inch)</DataTable.Title>
             <DataTable.Title numeric>Velocity</DataTable.Title>
             <DataTable.Title numeric>Energy</DataTable.Title>
-            <DataTable.Title numeric>Wind Drift (inches)</DataTable.Title>
-            <DataTable.Title numeric>Time millisecond</DataTable.Title>
+            <DataTable.Title numeric>Wind Drift(inch)</DataTable.Title>
+            <DataTable.Title numeric>Time (ms)</DataTable.Title>
           </DataTable.Header>
-          {this.props.tableRows.map(row => (
-            <DataTable.Row>
-              <DataTable.Cell numeric>{row.range}</DataTable.Cell>
-              <DataTable.Cell numeric>0</DataTable.Cell>
+          {this.state.tableRows.map(row => (
+            <DataTable.Row
+              style={{
+                width: '95%',
+                justifyContent: 'space-between',
+                // alignSelf: 'center',
+              }}>
+              <DataTable.Cell numeric style={{right: 30}}>
+                {row.range}
+              </DataTable.Cell>
+              <DataTable.Cell numeric style={{right: 20}}>
+                0
+              </DataTable.Cell>
               <DataTable.Cell numeric>{row.velocity}</DataTable.Cell>
               <DataTable.Cell numeric>{row.energy}</DataTable.Cell>
               <DataTable.Cell numeric>{row.WindDrift}</DataTable.Cell>
@@ -240,7 +262,7 @@ export default class BulletGraph extends Component {
             Reset & Calculate
           </Text>
         </TouchableOpacity>
-      </View>
+      </ScrollView>
     );
   }
   // render() {

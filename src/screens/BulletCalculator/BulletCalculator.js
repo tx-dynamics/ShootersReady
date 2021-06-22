@@ -9,32 +9,32 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {
-  ArcElement,
-  BarController,
-  BarElement,
-  BubbleController,
-  CategoryScale,
-  Chart,
-  Decimation,
-  DoughnutController,
-  Filler,
-  Legend,
-  LineController,
-  LineElement,
-  LinearScale,
-  LogarithmicScale,
-  PieController,
-  PointElement,
-  PolarAreaController,
-  RadarController,
-  RadialLinearScale,
-  ScatterController,
-  TimeScale,
-  TimeSeriesScale,
-  Title,
-  Tooltip,
-} from 'chart.js';
+// import {
+//   ArcElement,
+//   BarController,
+//   BarElement,
+//   BubbleController,
+//   CategoryScale,
+//   Chart,
+//   Decimation,
+//   DoughnutController,
+//   Filler,
+//   Legend,
+//   LineController,
+//   LineElement,
+//   LinearScale,
+//   LogarithmicScale,
+//   PieController,
+//   PointElement,
+//   PolarAreaController,
+//   RadarController,
+//   RadialLinearScale,
+//   ScatterController,
+//   TimeScale,
+//   TimeSeriesScale,
+//   Title,
+//   Tooltip,
+// } from 'chart.js';
 import {Divider, Header} from 'react-native-elements';
 import React, {Component} from 'react';
 
@@ -200,69 +200,10 @@ function BulletCalculator({navigation, ...props}) {
       });
     }
   };
-  // const handleCanvas = canvas => {
-  //   const ctx = canvas.getContext('2d');
-  //   var myChart = new Chart(ctx, {
-  //     type: 'bar',
-  //     data: {
-  //       labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-  //       datasets: [
-  //         {
-  //           label: '# of Votes',
-  //           data: [12, 19, 3, 5, 2, 3],
-  //           backgroundColor: [
-  //             'rgba(255, 99, 132, 0.2)',
-  //             'rgba(54, 162, 235, 0.2)',
-  //             'rgba(255, 206, 86, 0.2)',
-  //             'rgba(75, 192, 192, 0.2)',
-  //             'rgba(153, 102, 255, 0.2)',
-  //             'rgba(255, 159, 64, 0.2)',
-  //           ],
-  //           borderColor: [
-  //             'rgba(255, 99, 132, 1)',
-  //             'rgba(54, 162, 235, 1)',
-  //             'rgba(255, 206, 86, 1)',
-  //             'rgba(75, 192, 192, 1)',
-  //             'rgba(153, 102, 255, 1)',
-  //             'rgba(255, 159, 64, 1)',
-  //           ],
-  //           borderWidth: 1,
-  //         },
-  //       ],
-  //     },
-  //     options: {
-  //       scales: {
-  //         y: {
-  //           beginAtZero: true,
-  //         },
-  //       },
-  //     },
-  //   });
-  // };
   calculateBallistics(1);
   console.log(BallisticsVariables);
   console.log(BallisticsVariables?.ballisticsDatasets[0]?.data);
-  // this.state = {
-  //   bulletcal: bullets,
-  //   bname: [],
-  //   storeArr: [],
-  //   name: '',
-  //   filter: '',
-  //   coefficient: '.015',
-  //   velocity: '1850',
-  //   bweight: '20',
-  //   values: {
-  //     distanceUnits: 'Yards',
-  //     distance: '500',
-  //     chartStepping: '50',
-  //     sizeInches: '1.5',
-  //     sizeMils: '0',
-  //     slantDegrees: '0',
-  //     speedMPH: '0',
-  //   },
-  //   distance: '',
-  // };
-  // const { filter, coefficient, velocity, bweight } = this.state;
+
   const setInput = value => {
     this.setState({filter: value});
     console.log(value);
@@ -386,60 +327,6 @@ function BulletCalculator({navigation, ...props}) {
             </Picker>
           </View>
         </View>
-        {/* <View
-          style={{
-            flexDirection: 'row',
-            // backgroundColor: 'tomato',
-            marginTop: 15,
-            width: '95%',
-            alignSelf: 'center',
-            justifyContent: 'space-around',
-            marginBottom: 10,
-          }}>
-          <Text style={{fontSize: 14, fontWeight: 'bold', alignSelf: 'center'}}>
-            Bullet Name
-          </Text>
-          <View style={{borderColor: 'black', borderWidth: 1, width: '60%'}}>
-            <Picker
-              selectedValue={this.state.name}
-              style={{
-                borderRadius: 5,
-                height: 35,
-                color: 'black',
-                // backgroundColor: 'black',
-              }}
-              containerStyle={{borderWidth: 1, borderColor: 'black'}}
-              // prompt={'Select No of stores'}
-              placeholder={'Select Stores'}
-              onValueChange={value => {
-                this.setState({
-                  name: value,
-                });
-              }}>
-              {this.state.bname &&
-                this.state.bname.map((item, index) => {
-                  switch (item.id) {
-                    case item.id === '0':
-                      return (
-                        <Picker.Item
-                          key={index}
-                          label={item.no}
-                          value={item.id}
-                        />
-                      );
-                    default:
-                      return (
-                        <Picker.Item
-                          key={index}
-                          label={item.no}
-                          value={item.id}
-                        />
-                      );
-                  }
-                })}
-            </Picker>
-          </View>
-        </View> */}
 
         <View
           style={{
@@ -518,7 +405,11 @@ function BulletCalculator({navigation, ...props}) {
             imageStyle={{borderRadius: 10}}>
             <TouchableOpacity
               // style={{width: '50%'}}
-              onPress={() => calculateBallistics(1)}>
+              onPress={() =>
+                navigation.navigate('BulletGraph', {
+                  tableRows: BallisticsVariables,
+                })
+              }>
               <Text
                 style={{
                   color: 'white',
@@ -534,7 +425,7 @@ function BulletCalculator({navigation, ...props}) {
             </TouchableOpacity>
           </ImageBackground>
         </View>
-        <BulletGraph tableRows={BallisticsVariables.tableRows} />
+        {/* <BulletGraph tableRows={BallisticsVariables.tableRows} /> */}
         {/* <Canvas ref={handleCanvas} /> */}
       </ScrollView>
     </View>

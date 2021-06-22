@@ -1,45 +1,140 @@
-import React, {Component} from 'react';
 import {
-  View,
+  ActivityIndicator,
+  Image,
+  ImageBackground,
+  Picker,
+  ScrollView,
   Text,
   TextInput,
   TouchableOpacity,
-  Image,
-  ScrollView,
-  ActivityIndicator,
-  ImageBackground,
-  Picker,
+  View,
 } from 'react-native';
-import styles from './styles';
-import theme from '../../theme';
-import {Header, Divider} from 'react-native-elements';
+import {Divider, Header} from 'react-native-elements';
+import {Grid, LineChart, XAxis, YAxis} from 'react-native-svg-charts';
+import React, {Component} from 'react';
+
+import {DataTable} from 'react-native-paper';
+import {Dimensions} from 'react-native';
 import HeaderCenterComponent from '../../components/HeaderCenterComponent';
 import HeaderLeftComponent from '../../components/HeaderLeftComponent';
-import {LineChart, Grid, YAxis, XAxis} from 'react-native-svg-charts';
-import {Dimensions} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
+import styles from './styles';
+import theme from '../../theme';
+
 export default class BulletGraph extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      line: [100, 100, 90, 90, 80, 80, 70, 60, 50, 40, 30, 20],
+      line: [
+        -1.5,
+        -0.17,
+        0.91,
+        1.75,
+        2.33,
+        2.63,
+        2.65,
+        2.35,
+        1.73,
+        0.76,
+        -0.56,
+        -2.26,
+        -4.35,
+        -6.85,
+        -9.77,
+        -13.13,
+        -16.95,
+        -21.23,
+        -26.0,
+        -31.26,
+        -37.04,
+        -43.35,
+        -50.2,
+        -57.61,
+        -65.6,
+        -74.17,
+        -83.36,
+        -93.16,
+        -103.79,
+        -114.9,
+        -126.68,
+        -139.16,
+        -152.34,
+        -166.24,
+        -180.89,
+        -196.29,
+        -212.48,
+        -229.46,
+        -247.26,
+        -265.9,
+        -285.4,
+        -306.12,
+        -327.41,
+        -349.62,
+        -372.77,
+        -396.89,
+        -422.0,
+        -448.12,
+        -475.74,
+        -503.98,
+        -533.31,
+      ],
     };
   }
 
   render() {
+    console.log(this.props.tableRows);
     const data = [
-      50,
-      undefined,
-      100,
-
-      undefined,
-      59,
-      undefined,
-      10,
-      undefined,
-      53,
-      undefined,
-      50,
+      -1.5,
+      -0.17,
+      0.91,
+      1.75,
+      2.33,
+      2.63,
+      2.65,
+      2.35,
+      1.73,
+      0.76,
+      -0.56,
+      -2.26,
+      -4.35,
+      -6.85,
+      -9.77,
+      -13.13,
+      -16.95,
+      -21.23,
+      -26.0,
+      -31.26,
+      -37.04,
+      -43.35,
+      -50.2,
+      -57.61,
+      -65.6,
+      -74.17,
+      -83.36,
+      -93.16,
+      -103.79,
+      -114.9,
+      -126.68,
+      -139.16,
+      -152.34,
+      -166.24,
+      -180.89,
+      -196.29,
+      -212.48,
+      -229.46,
+      -247.26,
+      -265.9,
+      -285.4,
+      -306.12,
+      -327.41,
+      -349.62,
+      -372.77,
+      -396.89,
+      -422.0,
+      -448.12,
+      -475.74,
+      -503.98,
+      -533.31,
     ];
     return (
       <View style={{flex: 1, backgroundColor: 'white'}}>
@@ -83,14 +178,15 @@ export default class BulletGraph extends Component {
           }}>
           <YAxis
             data={data}
-            contentInset={{top: 9, bottom: 4}}
+            contentInset={{top: 10, bottom: 0}}
             svg={{
               fill: 'grey',
               fontSize: 10,
             }}
-            numberOfTicks={3}
+            numberOfTicks={25}
             formatLabel={(value, index) => value}
           />
+
           <LineChart
             style={{flex: 1, marginLeft: 16}}
             data={this.state.line}
@@ -101,87 +197,31 @@ export default class BulletGraph extends Component {
         </View>
         <XAxis
           data={data}
-          numberOfTicks={4}
+          numberOfTicks={25}
           formatLabel={(value, index) => value}
-          contentInset={{left: 48, right: 10}}
+          contentInset={{left: 50, right: 10}}
           svg={{fontSize: 10, fill: 'black'}}
         />
-
-        <View
-          style={{
-            // backgroundColor: 'tomato',
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            width: '98%',
-            alignSelf: 'center',
-            borderWidth: 1,
-            marginTop: 15,
-            alignContent: 'center',
-          }}>
-          <Text
-            style={{
-              fontSize: 12,
-              padding: 5,
-              textAlign: 'center',
-              // width: '16.33%',
-            }}>
-            Range
-          </Text>
-
-          <Text
-            style={{
-              fontSize: 12,
-              padding: 5,
-              borderLeftWidth: 1,
-              textAlign: 'center',
-              // width: '16.33%',
-            }}>
-            {'Drop \n (inches)'}
-          </Text>
-          <Text
-            style={{
-              fontSize: 12,
-              padding: 5,
-              borderLeftWidth: 1,
-              textAlign: 'center',
-            }}>
-            Velocity
-          </Text>
-          <Text
-            style={{
-              fontSize: 12,
-              padding: 5,
-              borderLeftWidth: 1,
-              textAlign: 'center',
-            }}>
-            Energy
-          </Text>
-          <Text
-            style={{
-              fontSize: 12,
-              padding: 5,
-              borderLeftWidth: 1,
-              textAlign: 'center',
-            }}>
-            {'Wind Drift \n (inches)'}
-          </Text>
-          <Text
-            style={{
-              fontSize: 12,
-              padding: 5,
-              borderLeftWidth: 1,
-              textAlign: 'center',
-            }}>
-            {'Time \n milisecond'}
-          </Text>
-        </View>
-        <View
-          style={{
-            bottom: 0,
-            // position: 'absolute',
-            height: Dimensions.get('screen').height / 7,
-          }}
-        />
+        <DataTable>
+          <DataTable.Header>
+            <DataTable.Title>Range</DataTable.Title>
+            <DataTable.Title numeric>Drop (inches)</DataTable.Title>
+            <DataTable.Title numeric>Velocity</DataTable.Title>
+            <DataTable.Title numeric>Energy</DataTable.Title>
+            <DataTable.Title numeric>Wind Drift (inches)</DataTable.Title>
+            <DataTable.Title numeric>Time millisecond</DataTable.Title>
+          </DataTable.Header>
+          {this.props.tableRows.map(row => (
+            <DataTable.Row>
+              <DataTable.Cell numeric>{row.range}</DataTable.Cell>
+              <DataTable.Cell numeric>0</DataTable.Cell>
+              <DataTable.Cell numeric>{row.velocity}</DataTable.Cell>
+              <DataTable.Cell numeric>{row.energy}</DataTable.Cell>
+              <DataTable.Cell numeric>{row.WindDrift}</DataTable.Cell>
+              <DataTable.Cell numeric>{row.time}</DataTable.Cell>
+            </DataTable.Row>
+          ))}
+        </DataTable>
         <TouchableOpacity
           onPress={() => this.props.navigation.navigate('BulletCalculator')}
           style={{
@@ -203,4 +243,83 @@ export default class BulletGraph extends Component {
       </View>
     );
   }
+  // render() {
+  //   const data = [
+  //     -1.5,
+  //     -0.17,
+  //     0.91,
+  //     1.75,
+  //     2.33,
+  //     2.63,
+  //     2.65,
+  //     2.35,
+  //     1.73,
+  //     0.76,
+  //     -0.56,
+  //     -2.26,
+  //     -4.35,
+  //     -6.85,
+  //     -9.77,
+  //     -13.13,
+  //     -16.95,
+  //     -21.23,
+  //     -26.0,
+  //     -31.26,
+  //     -37.04,
+  //     -43.35,
+  //     -50.2,
+  //     -57.61,
+  //     -65.6,
+  //     -74.17,
+  //     -83.36,
+  //     -93.16,
+  //     -103.79,
+  //     -114.9,
+  //     -126.68,
+  //     -139.16,
+  //     -152.34,
+  //     -166.24,
+  //     -180.89,
+  //     -196.29,
+  //     -212.48,
+  //     -229.46,
+  //     -247.26,
+  //     -265.9,
+  //     -285.4,
+  //     -306.12,
+  //     -327.41,
+  //     -349.62,
+  //     -372.77,
+  //     -396.89,
+  //     -422.0,
+  //     -448.12,
+  //     -475.74,
+  //     -503.98,
+  //     -533.31,
+  //   ];
+
+  //   const contentInset = {top: 10, bottom: 0};
+
+  //   return (
+  //     <View style={{height: 200, flexDirection: 'row'}}>
+  //       <YAxis
+  //         data={data}
+  //         contentInset={contentInset}
+  //         svg={{
+  //           fill: 'grey',
+  //           fontSize: 10,
+  //         }}
+  //         numberOfTicks={10}
+  //         formatLabel={value => `${value}`}
+  //       />
+  //       <LineChart
+  //         style={{flex: 1, marginLeft: 16}}
+  //         data={data}
+  //         svg={{stroke: 'rgb(134, 65, 244)'}}
+  //         contentInset={contentInset}>
+  //         <Grid />
+  //       </LineChart>
+  //     </View>
+  //   );
+  // }
 }

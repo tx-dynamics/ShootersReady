@@ -15,6 +15,7 @@ import {Header, Divider} from 'react-native-elements';
 import HeaderCenterComponent from '../../components/HeaderCenterComponent';
 import HeaderLeftComponent from '../../components/HeaderLeftComponent';
 import LinearGradient from 'react-native-linear-gradient';
+import {Dimensions} from 'react-native';
 export default class AmmoInventory extends Component {
   constructor(props) {
     super(props);
@@ -131,18 +132,20 @@ export default class AmmoInventory extends Component {
           style={{
             flexDirection: 'row',
             // backgroundColor: 'tomato',
-            width: '75%',
-            justifyContent: 'space-between',
-            alignSelf: 'flex-end',
-            alignItems: 'flex-end',
+            width: '80%',
+            // justifyContent: 'space-around',
+            alignSelf: 'center',
+            alignItems: 'center',
+            marginLeft: Dimensions.get('screen').width / 3,
           }}>
           <View
             style={{
               marginTop: 20,
-              width: '100%',
+              width: '80%',
               // justifyContent: 'space-around',
               flexDirection: 'row',
               marginBottom: 20,
+              alignSelf: 'flex-end',
               // backgroundColor: 'tomato',
             }}>
             <ImageBackground
@@ -171,16 +174,17 @@ export default class AmmoInventory extends Component {
           </View>
 
           <TouchableOpacity
-            style={{alignSelf: 'center'}}
+            // style={{alignSelf: 'center'}}
             onPress={() => {
               this.props.navigation.navigate('Addammo');
             }}>
             <Text
               style={{
-                textAlign: 'center',
-                marginRight: 10,
+                textAlign: 'left',
+                // marginRight: 10,
                 fontWeight: 'bold',
                 fontSize: 16,
+                right: 20,
               }}>
               + add
             </Text>

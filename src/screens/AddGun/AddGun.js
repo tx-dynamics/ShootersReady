@@ -27,24 +27,23 @@ export default class AddGun extends Component {
     super(props);
     this.state = {
       screen: '',
-      make: 'Germany',
-      model: 'hk416',
-      caliber: '5.56mm x 45',
+      make: '',
+      model: '',
+      caliber: '',
       space: '',
-      serial: '1962 AMC M422A1',
-      optic: 'M .approx. 481.0 mm',
-      fire: '500',
-      hand: '400',
-      whenPurchase: '17-2-2020',
-      Where: 'NY, Gun Street',
+      serial: '',
+      optic: '',
+      fire: '',
+      hand: '',
+      whenPurchase: '',
+      Where: '',
       bLength: '',
-      bTwist: 'HK416',
+      bTwist: '',
       bManu: '',
       image: '',
       isLoading: false,
-      status: 'Stolen',
-      notes:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed tempor lorem ut mattis consectetur. Duis suscipit urna vehicula ante luctus sodales sed in nisi.',
+      status: '',
+      notes: '',
     };
   }
   componentDidMount() {
@@ -472,7 +471,7 @@ export default class AddGun extends Component {
                   ? {
                       uri: `${this.state.image}`,
                     }
-                  : user
+                  : null
               }
               // borderRadius={80}
               style={styles.userImgStyle}

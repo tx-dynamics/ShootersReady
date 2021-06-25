@@ -27,12 +27,8 @@ export default class Profile extends Component {
     this.state = {
       img: '',
       currentUser: '',
-      name: 'Cortlin Martin',
-      data: [
-        {id: 0, name: 'M416', serial: '1962 AMC M422A1', img: ''},
-        {id: 1, name: 'AKM', serial: '1962 AMC M422A1', img: ''},
-        {id: 2, name: 'Thomson', serial: '1962 AMC M422A1', img: ''},
-      ],
+      name: '',
+      data: [],
     };
   }
   componentDidMount = async () => {

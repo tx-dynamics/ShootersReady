@@ -21,7 +21,14 @@ export default class GunInventory extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      data: [],
+      data: [
+        {id: 0, name: 'M416', serial: '1962 AMC M422A1', img: user},
+        {id: 1, name: 'AKM', serial: '1962 AMC M422A1', img: user},
+        {id: 2, name: 'Thomson', serial: '1962 AMC M422A1', img: user},
+        {id: 2, name: 'Thomson', serial: '1962 AMC M422A1', img: user},
+        {id: 2, name: 'Thomson', serial: '1962 AMC M422A1', img: user},
+        {id: 2, name: 'Thomson', serial: '1962 AMC M422A1', img: user},
+      ],
     };
   }
   componentDidMount() {
@@ -30,32 +37,27 @@ export default class GunInventory extends Component {
   getData() {
     const user = auth().currentUser;
     const data = database().ref('users/' + user.uid + '/gun/');
-    console.log(data !== null);
-
     data.on('value', userdata => {
       var dat = [];
       userdata.forEach(child => {
-        if (child.val() !== null) {
-          console.log('Val', child.val().id);
-          dat.push({
-            id: child.key,
-            serial: child.val().serial,
-            img: child.val().image,
-            make: child.val().make,
-            model: child.val().model,
-            caliber: child.val().caliber,
-            fire: child.val().fire,
-            hand: child.val().hand,
-            notes: child.val().notes,
-            whenPurchase: child.val().whenPurchase,
-            where: child.val().Where,
-            bLength: child.val().blength,
-            bManu: child.val().bManu,
-            bTwist: child.val().bTwist,
-          });
-          console.log('dat===>', dat);
-          this.setState({data: dat});
-        }
+        dat.push({
+          id: child.key,
+          serial: child.val().serial,
+          img: child.val().image,
+          make: child.val().make,
+          model: child.val().model,
+          caliber: child.val().caliber,
+          fire: child.val().fire,
+          hand: child.val().hand,
+          notes: child.val().notes,
+          whenPurchase: child.val().whenPurchase,
+          where: child.val().Where,
+          bLength: child.val().blength,
+          bManu: child.val().bManu,
+          bTwist: child.val().bTwist,
+        });
+        console.log('dat===>', dat);
+        this.setState({data: dat});
       });
     });
   }
@@ -86,7 +88,7 @@ export default class GunInventory extends Component {
               ? {
                   uri: `${item.img}`,
                 }
-              : null
+              : user
           }
           style={{
             height: 175,
@@ -197,8 +199,8 @@ export default class GunInventory extends Component {
           </View>
         </View>
         <FlatList
-          data={this.state.data && this.state.data}
-          extraData={this.state}
+          data={this.state.data}
+          extraData={this.state.data}
           showsHorizontalScrollIndicator={false}
           renderItem={this.renderGun}
           numColumns={2}

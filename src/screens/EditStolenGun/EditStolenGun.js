@@ -109,8 +109,7 @@ export default class EditStolenGun extends Component {
     let options = {
       // HTML Content for PDF.
       // I am putting all the HTML code in Single line but if you want to use large HTML code then you can use + Symbol to add them.
-      html:
-        '<h1 style="text-align: center;"><strong>Shooters Ready</strong></h1><p style="text-align: center;">In This Tutorial we would learn about creating PDF File using HTML Text.</p><p style="text-align: center;"><strong>ReactNativeCode.com</strong></p>',
+      html: `<h1 style="text-align: center;"><strong>Shooters Ready</strong></h1><p style="text-align: center;">In This Tutorial we would learn about creating PDF File using HTML Text.</p><p style="text-align: center;"><strong>ReactNativeCode.com</strong></p>`,
       // Setting UP File Name for PDF File.
       fileName: 'Shooter_Ready',
 
@@ -179,7 +178,7 @@ export default class EditStolenGun extends Component {
       xhr.send(null); // no initial data
     });
     var timestamp = new Date().getTime();
-    var imageRef = storage().ref('users/MissingGun/' + timestamp + '/');
+    var imageRef = storage().ref(`users/MissingGun/` + timestamp + '/');
 
     return imageRef
       .put(blob)

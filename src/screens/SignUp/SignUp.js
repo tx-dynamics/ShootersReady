@@ -115,10 +115,6 @@ class SignUp extends Component {
                       .then(res => {
                         console.log(auth().currentUser);
                         auth().signOut();
-                        Snackbar.show({
-                          text: 'Sign Up successfully',
-                          backgroundColor: 'black',
-                        });
                         this.props.navigation.navigate('Home');
                       })
                       .catch(res => {
@@ -205,7 +201,7 @@ class SignUp extends Component {
             <TextInput
               style={styles.body}
               placeholder="Email"
-              onChangeText={text => this.setState({email: text.trim()})}
+              onChangeText={text => this.setState({email: text})}
               value={email}
               placeholderTextColor={'white'}
               underlineColorAndroid="transparent"

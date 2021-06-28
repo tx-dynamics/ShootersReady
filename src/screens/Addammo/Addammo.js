@@ -20,13 +20,13 @@ export default class Addammo extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      caliber: '',
-      rounds: '',
-      fireround: '',
+      caliber: '5.56mm x 45',
+      rounds: '550',
+      fireround: '150',
       ammunation: '',
-      lot: '',
-      date: '',
-      remaining: '',
+      lot: 'HK416',
+      date: '3/29/2021',
+      remaining: '400',
       isLoading: false,
     };
   }

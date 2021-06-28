@@ -19,7 +19,16 @@ export default class GunProfile extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      data: [],
+      data: [
+        {id: 0, model: 'M416', serial: '1962 AMC M422A1', img: user},
+        {id: 1, model: 'AKM', serial: '1962 AMC M422A1', img: user},
+        {id: 2, model: 'Thomson', serial: '1962 AMC M422A1', img: user},
+        {id: 2, model: 'Thomson', serial: '1962 AMC M422A1', img: user},
+        {id: 2, model: 'Thomson', serial: '1962 AMC M422A1', img: user},
+        {id: 2, model: 'Thomson', serial: '1962 AMC M422A1', img: user},
+        {id: 2, model: 'Thomson', serial: '1962 AMC M422A1', img: user},
+        {id: 2, model: 'Thomson', serial: '1962 AMC M422A1', img: user},
+      ],
     };
   }
   componentDidMount() {
@@ -228,8 +237,8 @@ export default class GunProfile extends Component {
         </View>
 
         <FlatList
-          data={this.state.data && this.state.data}
-          extraData={this.state}
+          data={this.state.data}
+          extraData={this.state.data}
           contentContainerStyle={
             {
               // flex: 0.7,

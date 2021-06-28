@@ -1,17 +1,5 @@
 import React, {Component} from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  Image,
-  ScrollView,
-  ActivityIndicator,
-  ImageBackground,
-  FlatList,
-  Animated,
-  Dimensions,
-} from 'react-native';
+import {View, Text, TouchableOpacity, Image} from 'react-native';
 import styles from './styles';
 import theme from '../../theme';
 import {Header, Divider} from 'react-native-elements';
@@ -22,8 +10,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import LinearGradient from 'react-native-linear-gradient';
 import RNHTMLtoPDF from 'react-native-html-to-pdf';
 import Snackbar from 'react-native-snackbar';
-import PDFView from 'react-native-view-pdf';
-import Mailer from 'react-native-mail';
+import RNFS from 'react-native-fs';
 export default class MissingReport extends Component {
   constructor(props) {
     super(props);
@@ -41,9 +28,9 @@ export default class MissingReport extends Component {
       hand: '400',
       whenPurchase: '17-2-2020',
       Where: 'NY, Gun Street',
-      bLength: '',
+      bLength: '125cm',
       bTwist: 'HK416',
-      bManu: '',
+      bManu: '12',
       ammo: [
         {
           id: 0,
@@ -84,6 +71,7 @@ export default class MissingReport extends Component {
     const optic = this.props.navigation.getParam('optic');
     const serial = this.props.navigation.getParam('serial');
     const caliber = this.props.navigation.getParam('caliber');
+    const bManu = this.props.navigation.getParam('bManu');
 
     this.setState({
       make,
@@ -98,6 +86,7 @@ export default class MissingReport extends Component {
       optic,
       serial,
       caliber,
+      bManu,
     });
   }
 
@@ -109,68 +98,33 @@ export default class MissingReport extends Component {
       <p style=" font-family: courier;",
      " font-family: verdana;",
       "font-size: 80%;",
-      "margin-left:10%;">Gun Model: ${this.state.model}</p>
+      "margin-left:10%;">Gun Model: hk416</p>
       <p style=" font-family: courier;",
       " font-family: verdana;",
        "font-size: 80%;",
-       "margin-left:10%;">Gun Make: ${this.state.model}</p>
-       <p style=" font-family: courier;",
+       "margin-left:10%;">Gun Make: Germany</p>
+     <p style=" font-family: courier;",
        " font-family: verdana;",
-        "font-size: 80%;",
-        "margin-left:10%;">Gun Status: ${this.state.status}</p>
-       <p style=" font-family: courier;",
-       " font-family: verdana;",
-        "font-size: 80%;",
-        "margin-left:10%;">Gun Caliber: ${this.state.caliber}</p>
-        <p style=" font-family: courier;",
-        " font-family: verdana;",
-         "font-size: 80%;",
-         "margin-left:10%;">Gun Serial: ${this.state.serial}</p>
-         <p style=" font-family: courier;",
-         " font-family: verdana;",
-          "font-size: 80%;",
-          "margin-left:10%;">Gun Optic: ${this.state.optic}</p>
-          <p style=" font-family: courier;",
-          " font-family: verdana;",
-           "font-size: 80%;",
-           "margin-left:10%;">Rounds Fired: ${this.state.fire}</p>
-           <p style=" font-family: courier;",
-           " font-family: verdana;",
-            "font-size: 80%;",
-            "margin-left:10%;">Rounds on Hands: ${this.state.hand}</p>
-            <p style=" font-family: courier;",
-            " font-family: verdana;",
-             "font-size: 80%;",
-             "margin-left:10%;">Where it Purchased: ${this.state.Where}</p>
-             <p style=" font-family: courier;",
-             " font-family: verdana;",
-              "font-size: 80%;",
-              "margin-left:10%;">When Purchased: ${this.state.whenPurchase}</p>
-              <p style=" font-family: courier;",
-              " font-family: verdana;",
-               "font-size: 80%;",
-               "margin-left:10%;">Barrel Length: ${this.state.bLength}</p>
-               <p style=" font-family: courier;",
-               " font-family: verdana;",
-                "font-size: 80%;",
-                "margin-left:10%;">Barrel Twist: ${this.state.bTwist}</p>
-                <p style=" font-family: courier;",
-                " font-family: verdana;",
-                 "font-size: 80%;",
-                 "margin-left:10%;">Barrel Manufacture: ${this.state.bManu}</p>
-                 <p style=" font-family: courier;",
-                 " font-family: verdana;",
-                  "font-size: 80%;",
-                  "margin-left:10%;">Notes: ${this.state.details}</p>
+       "font-size: 80%;",
+      "margin-left:10%;">Notes: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed tempor lorem ut mattis consectetur. Duis suscipit urna vehicula ante luctus sodales sed in nisi.</p>
       `,
       fileName: `${this.state.serial}`,
 
       //File directory in which the PDF File Will Store.
-      directory: 'Download',
+      // directory: 'Download',
     };
 
     let file = await RNHTMLtoPDF.convert(options);
+    var path = RNFS.DocumentDirectoryPath + '/Shooter_Ready.pdf';
 
+    // write the file
+    RNFS.writeFile(path, file, 'utf8')
+      .then(success => {
+        console.log('FILE WRITTEN!');
+      })
+      .catch(err => {
+        console.log(err.message);
+      });
     console.log(file);
 
     Snackbar.show({

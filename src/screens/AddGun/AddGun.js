@@ -87,9 +87,9 @@ export default class AddGun extends Component {
     var imageRef = '';
     var timestamp = new Date().getTime();
     if (this.state.screen === 'gun') {
-      imageRef = storage().ref('users/gun/' + timestamp + '/');
+      imageRef = storage().ref(`users/gun/` + timestamp + '/');
     } else {
-      imageRef = storage().ref('users/MissingGun/' + timestamp + '/');
+      imageRef = storage().ref(`users/MissingGun/` + timestamp + '/');
     }
 
     return imageRef

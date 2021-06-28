@@ -42,7 +42,7 @@ export default class Home extends Component {
             this.props.navigation.navigate('Main'),
           );
           Snackbar.show({
-            text: 'Welcome Back ',
+            text: `Welcome Back `,
             backgroundColor: theme.colors.primary,
             duration: Snackbar.LENGTH_LONG,
           });
@@ -81,7 +81,7 @@ export default class Home extends Component {
                 this.props.navigation.navigate('Main'),
               );
               Snackbar.show({
-                text: 'Welcome Back ',
+                text: `Welcome Back `,
                 backgroundColor: theme.colors.primary,
                 duration: Snackbar.LENGTH_LONG,
               });
@@ -142,8 +142,7 @@ export default class Home extends Component {
             justifyContent: 'flex-end',
             // marginTop: 10,
             flex: 0.3,
-          }}
-        />
+          }}></ImageBackground>
         <View style={{flex: 0.3}}>
           <Text style={styles.mediumText}>By Tour Of Duty Outdoors</Text>
           <Divider

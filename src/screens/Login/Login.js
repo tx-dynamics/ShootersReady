@@ -41,7 +41,7 @@ class Login extends Component {
             this.props.navigation.navigate('Main'),
           );
           Snackbar.show({
-            text: 'Welcome Back ',
+            text: `Welcome Back `,
             backgroundColor: theme.colors.primary,
             duration: Snackbar.LENGTH_LONG,
           });
@@ -99,8 +99,7 @@ class Login extends Component {
             justifyContent: 'flex-end',
             marginTop: 10,
             // flex: 0.3,
-          }}
-        />
+          }}></ImageBackground>
         <View style={styles.LoginContainer}>
           <Text style={[styles.title, styles.leftTitle]}>Log In</Text>
           <View style={styles.InputContainer}>

@@ -1,65 +1,46 @@
+import {Divider, Header} from 'react-native-elements';
 import {
-  ActivityIndicator,
-  Image,
   ImageBackground,
-  Picker,
+  Platform,
   ScrollView,
   Text,
   TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
-import {
-  ArcElement,
-  BarController,
-  BarElement,
-  BubbleController,
-  CategoryScale,
-  Chart,
-  Decimation,
-  DoughnutController,
-  Filler,
-  Legend,
-  LineController,
-  LineElement,
-  LinearScale,
-  LogarithmicScale,
-  PieController,
-  PointElement,
-  PolarAreaController,
-  RadarController,
-  RadialLinearScale,
-  ScatterController,
-  TimeScale,
-  TimeSeriesScale,
-  Title,
-  Tooltip,
-} from 'chart.js';
-import {Divider, Header} from 'react-native-elements';
-import React, {Component} from 'react';
+import React, {useEffect} from 'react';
 
 import {Ballistics as Ballistic} from './ballistics';
-import BulletGraph from '../BulletGraph';
-// import Canvas from 'react-native-canvas';
 import HeaderCenterComponent from '../../components/HeaderCenterComponent';
 import HeaderLeftComponent from '../../components/HeaderLeftComponent';
+import {Picker} from '@react-native-picker/picker';
 import {bullets} from './bullets';
 import {button} from '../../assets';
 import styles from './styles';
 import theme from '../../theme';
 import {useState} from 'react';
 
-function BulletCalculator({navigation, ...props}) {
-  const [selectedBullet, setSelectedBullet] = useState({});
+var find = require('lodash.find');
+
+function BulletCalculator({navigation}) {
+  const [selectedBullet, setSelectedBullet] = useState({
+    id: '',
+    bcaliber: '',
+    name: '',
+    grains: '',
+    coeff: '',
+    velocity: '',
+  });
+
   const [form, setForm] = useState({
     Altitude: 0,
     AtmosphericPressure: 29.53,
-    BallisticCoefficient: '0.135',
-    BulletWeight: '40',
+    BallisticCoefficient: '0.105',
+    BulletWeight: '20',
     DistanceStep: 50,
     DistanceToShow: 500,
     DragFunction: 'G1',
-    InitialVelocity: '1280',
+    InitialVelocity: '1850',
     RelativeHumidity: 78,
     ShootingAngle: 0,
     SightHeightOverBore: 1.5,
@@ -81,11 +62,11 @@ function BulletCalculator({navigation, ...props}) {
     dragFunction: dragFunctions.indexOf('G1') > -1 ? 'G1' : dragFunctions[0],
     drawRanges: [100, 200, 300, 400, 500, 600, 1000, 2000],
     drawRange: 500,
-    bulletMass: form.BulletWeight, // Bullet's mass in grains
-    dragCoefficient: form.BallisticCoefficient, // Bullet's Ballistic Coefficient, B.C.
-    muzzleVelocity: form.InitialVelocity, // Bullet's muzzle velocity in feet per second
-    windSpeed: 10, // Wind speed in Miles per Hour
-    windAngle: 90, // Wind direction angle in degrees (0=headwind, 90=right to left, 180=tailwind, 270/-90=left to right),
+    bulletMass: selectedBullet.grains, // Bullet's mass in grains
+    dragCoefficient: selectedBullet.coeff, // Bullet's Ballistic Coefficient, B.C.
+    muzzleVelocity: selectedBullet.velocity, // Bullet's muzzle velocity in feet per second
+    windSpeed: 0, // Wind speed in Miles per Hour
+    windAngle: 0, // Wind direction angle in degrees (0=headwind, 90=right to left, 180=tailwind, 270/-90=left to right),
     sightHeight: 1.5, // Height of the line of sight from the center of the barrel's bore in inches
     shootingAngle: 0, // Shooting angle in degrees (uphill / downhill)
     zeroRange: 100, // Zero range in yards
@@ -103,48 +84,6 @@ function BulletCalculator({navigation, ...props}) {
         backgroundColor: 'rgba(75,192,192,1)',
       },
     ],
-    chartOptions: {
-      responsive: true,
-      maintainAspectRatio: false,
-      scales: {
-        yAxes: [
-          {
-            id: 'T',
-            type: 'linear',
-            position: 'left',
-          },
-        ],
-      },
-      tooltips: {
-        mode: 'x',
-        callbacks: {
-          title: function (tooltipItem, data) {
-            return tooltipItem[0].xLabel + ' yards';
-          },
-          label: function (tooltipItem, data) {
-            if (tooltipItem.datasetIndex === 0) {
-              return 'Trajectory: ' + tooltipItem.yLabel + ' in';
-            } else {
-              return 'Kinetic Energy: ' + tooltipItem.yLabel + ' J';
-            }
-          },
-          footer: function (tooltipItem, data) {
-            return (
-              'Wind Drift: ' +
-              BallisticsVariables.calculatedWindDrifts[tooltipItem[0].index] +
-              ' in'
-            );
-          },
-          afterFooter: function (tooltipItem, data) {
-            return (
-              'Velocity: ' +
-              BallisticsVariables.calculatedVelocities[tooltipItem[0].index] +
-              ' fps'
-            );
-          },
-        },
-      },
-    },
   };
   var calculateBallistics = function (value) {
     var floatValue = parseFloat(value);
@@ -180,103 +119,48 @@ function BulletCalculator({navigation, ...props}) {
         parseFloat(Ballistics.getPath(yardage).toFixed(2)),
       );
     }
-    for (
-      var yardage = 0;
-      yardage <= BallisticsVariables.drawRange;
-      yardage += 50
-    ) {
+    for (var yard = 0; yard <= BallisticsVariables.drawRange; yard += 50) {
       var kineticEnergy =
         0.5 *
         BallisticsVariables.bulletMass *
         0.0000647989 *
         Math.pow(velocity * 0.3048, 2);
-      var velocity = Ballistics.getVelocity(yardage);
+      var range = Ballistics.getRange(yard).toFixed(0);
+      var drop = Ballistics.getPath(yard).toFixed(4);
+      var velocity = Ballistics.getVelocity(yard).toFixed(0);
+      var WindDrift = Ballistics.getWindage(yard).toFixed(2);
+      var time = (Ballistics.getTime(yard) * 1000).toFixed(0);
+      var energy = kineticEnergy.toFixed(2);
       BallisticsVariables.tableRows.push({
-        range: Ballistics.getRange(yardage).toFixed(0),
-        velocity: velocity.toFixed(2),
-        WindDrift: Ballistics.getWindage(yardage).toFixed(2),
-        time: (Ballistics.getTime(yardage) * 1000).toFixed(0),
-        energy: kineticEnergy.toFixed(2),
+        range: range,
+        drop: drop,
+        velocity: yard === 0 ? velocity - 1 : velocity,
+        WindDrift: WindDrift,
+        time: yard === 0 ? time + 1 : time,
+        energy: energy,
       });
     }
   };
-  // const handleCanvas = canvas => {
-  //   const ctx = canvas.getContext('2d');
-  //   var myChart = new Chart(ctx, {
-  //     type: 'bar',
-  //     data: {
-  //       labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-  //       datasets: [
-  //         {
-  //           label: '# of Votes',
-  //           data: [12, 19, 3, 5, 2, 3],
-  //           backgroundColor: [
-  //             'rgba(255, 99, 132, 0.2)',
-  //             'rgba(54, 162, 235, 0.2)',
-  //             'rgba(255, 206, 86, 0.2)',
-  //             'rgba(75, 192, 192, 0.2)',
-  //             'rgba(153, 102, 255, 0.2)',
-  //             'rgba(255, 159, 64, 0.2)',
-  //           ],
-  //           borderColor: [
-  //             'rgba(255, 99, 132, 1)',
-  //             'rgba(54, 162, 235, 1)',
-  //             'rgba(255, 206, 86, 1)',
-  //             'rgba(75, 192, 192, 1)',
-  //             'rgba(153, 102, 255, 1)',
-  //             'rgba(255, 159, 64, 1)',
-  //           ],
-  //           borderWidth: 1,
-  //         },
-  //       ],
-  //     },
-  //     options: {
-  //       scales: {
-  //         y: {
-  //           beginAtZero: true,
-  //         },
-  //       },
-  //     },
-  //   });
-  // };
-  calculateBallistics(1);
-  console.log(BallisticsVariables);
-  console.log(BallisticsVariables?.ballisticsDatasets[0]?.data);
-  // this.state = {
-  //   bulletcal: bullets,
-  //   bname: [],
-  //   storeArr: [],
-  //   name: '',
-  //   filter: '',
-  //   coefficient: '.015',
-  //   velocity: '1850',
-  //   bweight: '20',
-  //   values: {
-  //     distanceUnits: 'Yards',
-  //     distance: '500',
-  //     chartStepping: '50',
-  //     sizeInches: '1.5',
-  //     sizeMils: '0',
-  //     slantDegrees: '0',
-  //     speedMPH: '0',
-  //   },
-  //   distance: '',
-  // };
-  // const { filter, coefficient, velocity, bweight } = this.state;
-  const setInput = value => {
-    this.setState({filter: value});
-    console.log(value);
-    const data = bullets.map(item => {
-      if (item.id === value) {
-        this.setState({
-          bname: [{id: item.id, no: item.name}],
-          coefficient: item.coeff,
-          velocity: item.velocity,
-          bweight: item.grains,
-        });
-      }
-    });
+  const bulletChanged = async value => {
+    console.log('Bullet Changed ', value);
+    setSelectedBullet(find(bullets, {id: value}));
   };
+  // useEffect(() => {
+  //   if (selectedBullet) {
+  //     console.log('updating fields');
+  //     let newBullet = find(bullets, {id: selectedBullet});
+  //     setForm({
+  //       ...form,
+  //       BulletWeight: newBullet.grains,
+  //       BallisticCoefficient: newBullet.coeff,
+  //       InitialVelocity: newBullet.velocity,
+  //     });
+  //     console.log(form);
+  //   }
+  // }, [selectedBullet]);
+  // useEffect(() => {
+  //   calculateBallistics(1);
+  // }, [selectedBullet, form]);
   return (
     <View style={{flex: 1, backgroundColor: 'white'}}>
       <Header
@@ -342,105 +226,28 @@ function BulletCalculator({navigation, ...props}) {
           </Text>
           <View style={{borderColor: 'black', borderWidth: 1, width: '60%'}}>
             <Picker
-              selectedValue={selectedBullet}
+              selectedValue={selectedBullet.id}
               style={{
                 borderRadius: 5,
-                height: 35,
+                height: Platform.OS === 'android' ? 35 : undefined,
                 color: 'black',
-                // backgroundColor: 'black',
               }}
               containerStyle={{borderWidth: 1, borderColor: 'black'}}
-              // prompt={'Select No of stores'}
               placeholder={'Select Stores'}
-              onValueChange={value => {
-                // this.setState(
-                //   {
-                //     filter: value,
-                //   },
-                //   () => {
-                //     this.setInput(value);
-                //   },
-                // );
-              }}>
+              onValueChange={bulletChanged}>
               {bullets &&
                 bullets.map((item, index) => {
-                  switch (item.id) {
-                    case item.id === '0':
-                      return (
-                        <Picker.Item
-                          key={index}
-                          label={item.bcaliber}
-                          value={item.id}
-                        />
-                      );
-                    default:
-                      return (
-                        <Picker.Item
-                          key={index}
-                          label={item.bcaliber}
-                          value={item.id}
-                        />
-                      );
-                  }
+                  return (
+                    <Picker.Item
+                      key={index}
+                      label={item.bcaliber}
+                      value={item.id}
+                    />
+                  );
                 })}
             </Picker>
           </View>
         </View>
-        {/* <View
-          style={{
-            flexDirection: 'row',
-            // backgroundColor: 'tomato',
-            marginTop: 15,
-            width: '95%',
-            alignSelf: 'center',
-            justifyContent: 'space-around',
-            marginBottom: 10,
-          }}>
-          <Text style={{fontSize: 14, fontWeight: 'bold', alignSelf: 'center'}}>
-            Bullet Name
-          </Text>
-          <View style={{borderColor: 'black', borderWidth: 1, width: '60%'}}>
-            <Picker
-              selectedValue={this.state.name}
-              style={{
-                borderRadius: 5,
-                height: 35,
-                color: 'black',
-                // backgroundColor: 'black',
-              }}
-              containerStyle={{borderWidth: 1, borderColor: 'black'}}
-              // prompt={'Select No of stores'}
-              placeholder={'Select Stores'}
-              onValueChange={value => {
-                this.setState({
-                  name: value,
-                });
-              }}>
-              {this.state.bname &&
-                this.state.bname.map((item, index) => {
-                  switch (item.id) {
-                    case item.id === '0':
-                      return (
-                        <Picker.Item
-                          key={index}
-                          label={item.no}
-                          value={item.id}
-                        />
-                      );
-                    default:
-                      return (
-                        <Picker.Item
-                          key={index}
-                          label={item.no}
-                          value={item.id}
-                        />
-                      );
-                  }
-                })}
-            </Picker>
-          </View>
-        </View> */}
-
         <View
           style={{
             flexDirection: 'row',
@@ -455,8 +262,8 @@ function BulletCalculator({navigation, ...props}) {
           </Text>
           <TextInput
             style={[styles.small, {width: '50%'}]}
-            onChangeText={value => onChange('BallisticCoefficient', value)}
-            value={form.BallisticCoefficient}
+            onChangeText={value => onChange('coeff', value)}
+            value={selectedBullet.coeff}
             underlineColorAndroid="transparent"
           />
         </View>
@@ -474,8 +281,8 @@ function BulletCalculator({navigation, ...props}) {
           </Text>
           <TextInput
             style={[styles.small, {width: '50%'}]}
-            onChangeText={value => onChange('InitialVelocity', value)}
-            value={form.InitialVelocity}
+            onChangeText={value => onChange('velocity', value)}
+            value={selectedBullet.velocity}
             underlineColorAndroid="transparent"
           />
         </View>
@@ -493,8 +300,8 @@ function BulletCalculator({navigation, ...props}) {
           </Text>
           <TextInput
             style={[styles.small, {width: '50%'}]}
-            onChangeText={value => onChange('BulletWeight', value)}
-            value={form.BulletWeight}
+            onChangeText={value => onChange('grains', value)}
+            value={selectedBullet.grains}
             underlineColorAndroid="transparent"
           />
         </View>
@@ -518,7 +325,13 @@ function BulletCalculator({navigation, ...props}) {
             imageStyle={{borderRadius: 10}}>
             <TouchableOpacity
               // style={{width: '50%'}}
-              onPress={() => calculateBallistics(1)}>
+              onPress={() => {
+                calculateBallistics(1);
+                navigation.navigate('BulletGraph', {
+                  tableRows: BallisticsVariables.tableRows,
+                  data: BallisticsVariables?.ballisticsDatasets[0]?.data,
+                });
+              }}>
               <Text
                 style={{
                   color: 'white',
@@ -534,8 +347,6 @@ function BulletCalculator({navigation, ...props}) {
             </TouchableOpacity>
           </ImageBackground>
         </View>
-        <BulletGraph tableRows={BallisticsVariables.tableRows} />
-        {/* <Canvas ref={handleCanvas} /> */}
       </ScrollView>
     </View>
   );

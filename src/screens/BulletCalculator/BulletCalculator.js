@@ -32,26 +32,26 @@ function BulletCalculator({navigation}) {
     velocity: '',
   });
 
-  const [form, setForm] = useState({
-    Altitude: 0,
-    AtmosphericPressure: 29.53,
-    BallisticCoefficient: '0.105',
-    BulletWeight: '20',
-    DistanceStep: 50,
-    DistanceToShow: 500,
-    DragFunction: 'G1',
-    InitialVelocity: '1850',
-    RelativeHumidity: 78,
-    ShootingAngle: 0,
-    SightHeightOverBore: 1.5,
-    Temperature: 59,
-    WindAngle: 0,
-    WindVelocity: 0,
-    ZeroRange: '100',
-  });
+  // const [form, setForm] = useState({
+  //   Altitude: 0,
+  //   AtmosphericPressure: 29.53,
+  //   BallisticCoefficient: '0.105',
+  //   BulletWeight: '20',
+  //   DistanceStep: 50,
+  //   DistanceToShow: 500,
+  //   DragFunction: 'G1',
+  //   InitialVelocity: '1850',
+  //   RelativeHumidity: 78,
+  //   ShootingAngle: 0,
+  //   SightHeightOverBore: 1.5,
+  //   Temperature: 59,
+  //   WindAngle: 0,
+  //   WindVelocity: 0,
+  //   ZeroRange: '100',
+  // });
   const onChange = (field, value) => {
-    setForm({
-      ...form,
+    setSelectedBullet({
+      ...selectedBullet,
       [field]: value,
     });
   };

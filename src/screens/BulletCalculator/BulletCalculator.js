@@ -21,17 +21,31 @@ import theme from '../../theme';
 import {useState} from 'react';
 
 var find = require('lodash.find');
+let Calibers = Object.values(
+  bullets.reduce((a, {bcaliber, ...props}) => {
+    if (!a[bcaliber]) {
+      a[bcaliber] = Object.assign({}, {bcaliber, bullets: [props]});
+    } else {
+      a[bcaliber].bullets.push(props);
+    }
+    return a;
+  }, {}),
+);
 
+// console.log(JSON.stringify(result));
 function BulletCalculator({navigation}) {
-  const [selectedBullet, setSelectedBullet] = useState({
+  const [selectedCaliber, setSelectedCaliber] = useState(null);
+  const emptyBullet = {
     id: '',
-    bcaliber: '',
     name: '',
     grains: '',
     coeff: '',
     velocity: '',
-  });
-
+  };
+  const [selectedBullet, setSelectedBullet] = useState(emptyBullet);
+  const resetBullet = () => {
+    setSelectedBullet(emptyBullet);
+  };
   // const [form, setForm] = useState({
   //   Altitude: 0,
   //   AtmosphericPressure: 29.53,
@@ -62,9 +76,9 @@ function BulletCalculator({navigation}) {
     dragFunction: dragFunctions.indexOf('G1') > -1 ? 'G1' : dragFunctions[0],
     drawRanges: [100, 200, 300, 400, 500, 600, 1000, 2000],
     drawRange: 500,
-    bulletMass: selectedBullet.grains, // Bullet's mass in grains
-    dragCoefficient: selectedBullet.coeff, // Bullet's Ballistic Coefficient, B.C.
-    muzzleVelocity: selectedBullet.velocity, // Bullet's muzzle velocity in feet per second
+    bulletMass: selectedBullet?.grains, // Bullet's mass in grains
+    dragCoefficient: selectedBullet?.coeff, // Bullet's Ballistic Coefficient, B.C.
+    muzzleVelocity: selectedBullet?.velocity, // Bullet's muzzle velocity in feet per second
     windSpeed: 0, // Wind speed in Miles per Hour
     windAngle: 0, // Wind direction angle in degrees (0=headwind, 90=right to left, 180=tailwind, 270/-90=left to right),
     sightHeight: 1.5, // Height of the line of sight from the center of the barrel's bore in inches
@@ -143,7 +157,11 @@ function BulletCalculator({navigation}) {
   };
   const bulletChanged = async value => {
     console.log('Bullet Changed ', value);
-    setSelectedBullet(find(bullets, {id: value}));
+    if (!value) {
+      setSelectedBullet(emptyBullet);
+    } else {
+      setSelectedBullet(find(bullets, {id: value}));
+    }
   };
   // useEffect(() => {
   //   if (selectedBullet) {
@@ -224,7 +242,47 @@ function BulletCalculator({navigation}) {
           <Text style={{fontSize: 14, fontWeight: 'bold', alignSelf: 'center'}}>
             Bullet Caliber
           </Text>
-          <View style={{borderColor: 'black', borderWidth: 1, width: '60%'}}>
+          <View style={{borderColor: 'black', borderWidth: 1, width: '70%'}}>
+            <Picker
+              selectedValue={selectedCaliber?.bcaliber}
+              style={{
+                borderRadius: 5,
+                height: Platform.OS === 'android' ? 35 : undefined,
+                color: 'black',
+              }}
+              containerStyle={{borderWidth: 1, borderColor: 'black'}}
+              placeholder={'Select Stores'}
+              onValueChange={value => {
+                setSelectedCaliber(find(Calibers, {bcaliber: value}));
+                resetBullet();
+              }}>
+              {Calibers &&
+                Calibers.map((item, index) => {
+                  return (
+                    <Picker.Item
+                      key={index}
+                      label={item.bcaliber}
+                      value={item.bcaliber}
+                    />
+                  );
+                })}
+            </Picker>
+          </View>
+        </View>
+        <View
+          style={{
+            flexDirection: 'row',
+            // backgroundColor: 'tomato',
+            marginTop: 20,
+            width: '95%',
+            alignSelf: 'center',
+            justifyContent: 'space-around',
+            marginBottom: 10,
+          }}>
+          <Text style={{fontSize: 14, fontWeight: 'bold', alignSelf: 'center'}}>
+            Bullet Name
+          </Text>
+          <View style={{borderColor: 'black', borderWidth: 1, width: '70%'}}>
             <Picker
               selectedValue={selectedBullet.id}
               style={{
@@ -235,12 +293,14 @@ function BulletCalculator({navigation}) {
               containerStyle={{borderWidth: 1, borderColor: 'black'}}
               placeholder={'Select Stores'}
               onValueChange={bulletChanged}>
-              {bullets &&
-                bullets.map((item, index) => {
+              <Picker.Item key={null} label={'Select Bullet'} value={null} />
+              {selectedCaliber &&
+                selectedCaliber?.bullets &&
+                selectedCaliber.bullets.map((item, index) => {
                   return (
                     <Picker.Item
                       key={index}
-                      label={item.bcaliber}
+                      label={item.name}
                       value={item.id}
                     />
                   );
@@ -307,45 +367,87 @@ function BulletCalculator({navigation}) {
         </View>
         <View
           style={{
+            flexDirection: 'row',
+            width: '100%',
             marginTop: 20,
-            width: '95%',
             marginBottom: 10,
-            // backgroundColor: 'tomato',
-            alignItems: 'flex-end',
+            paddingHorizontal: 10,
           }}>
-          <ImageBackground
+          <View
             style={{
-              flex: 0.4,
-              height: null,
-              width: null,
-              resizeMode: 'cover',
-              borderRadius: 40,
-            }}
-            source={button}
-            imageStyle={{borderRadius: 10}}>
-            <TouchableOpacity
-              // style={{width: '50%'}}
-              onPress={() => {
-                calculateBallistics(1);
-                navigation.navigate('BulletGraph', {
-                  tableRows: BallisticsVariables.tableRows,
-                  data: BallisticsVariables?.ballisticsDatasets[0]?.data,
-                });
-              }}>
-              <Text
-                style={{
-                  color: 'white',
-                  // backgroundColor: theme.colors.primary,
-                  padding: 20,
-                  textAlign: 'center',
-                  borderRadius: 5,
-                  fontSize: 16,
-                  fontWeight: 'bold',
+              width: '50%',
+              alignItems: 'flex-start',
+            }}>
+            <ImageBackground
+              style={{
+                flex: 0.4,
+                height: null,
+                width: null,
+                resizeMode: 'cover',
+                borderRadius: 40,
+              }}
+              source={button}
+              imageStyle={{borderRadius: 10}}>
+              <TouchableOpacity
+                // style={{width: '50%'}}
+                onPress={() => {
+                  setSelectedCaliber(null);
+                  resetBullet();
                 }}>
-                Calculate
-              </Text>
-            </TouchableOpacity>
-          </ImageBackground>
+                <Text
+                  style={{
+                    color: 'white',
+                    // backgroundColor: theme.colors.primary,
+                    padding: 20,
+                    textAlign: 'center',
+                    borderRadius: 5,
+                    fontSize: 16,
+                    fontWeight: 'bold',
+                  }}>
+                  Reset Form
+                </Text>
+              </TouchableOpacity>
+            </ImageBackground>
+          </View>
+          <View
+            style={{
+              width: '50%',
+              alignItems: 'flex-end',
+            }}>
+            <ImageBackground
+              style={{
+                flex: 0.4,
+                height: null,
+                width: null,
+                resizeMode: 'cover',
+                borderRadius: 40,
+              }}
+              source={button}
+              imageStyle={{borderRadius: 10}}>
+              <TouchableOpacity
+                // style={{width: '50%'}}
+                onPress={() => {
+                  calculateBallistics(1);
+                  navigation.navigate('BulletGraph', {
+                    tableRows: BallisticsVariables.tableRows,
+                    data: BallisticsVariables?.ballisticsDatasets[0]?.data,
+                  });
+                }}>
+                <Text
+                  style={{
+                    color: 'white',
+                    // backgroundColor: theme.colors.primary,
+                    padding: 20,
+                    textAlign: 'center',
+                    borderRadius: 5,
+                    fontSize: 16,
+                    fontWeight: 'bold',
+                  }}>
+                  Calculate
+                </Text>
+              </TouchableOpacity>
+            </ImageBackground>
+          </View>
         </View>
       </ScrollView>
     </View>

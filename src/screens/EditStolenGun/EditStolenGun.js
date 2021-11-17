@@ -24,6 +24,7 @@ import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import DocumentPicker from 'react-native-document-picker';
 import LinearGradient from 'react-native-linear-gradient';
+import storage from '@react-native-firebase/storage';
 export default class EditStolenGun extends Component {
   constructor(props) {
     super(props);
@@ -151,9 +152,10 @@ export default class EditStolenGun extends Component {
       const res = await DocumentPicker.pick({
         type: [DocumentPicker.types.images],
       });
-      this.setState({image: res.uri}, this.uploadmultimedia);
-
-      console.log(res.uri);
+      res.map(item=>{
+        this.setState({image: item.uri});
+        this.uploadmultimedia(item.uri);
+      });
     } catch (err) {
       if (DocumentPicker.isCancel(err)) {
         // User cancelled the picker, exit any dialogs or menus and move on
@@ -162,7 +164,7 @@ export default class EditStolenGun extends Component {
       }
     }
   };
-  async uploadmultimedia() {
+  async uploadmultimedia(uri) {
     const user = auth().currentUser;
     console.log(this.state.image);
     this.setState({loading: true});
@@ -175,7 +177,7 @@ export default class EditStolenGun extends Component {
         reject(new TypeError('Network request failed')); // error occurred, rejecting
       };
       xhr.responseType = 'blob'; // use BlobModule's UriHandler
-      xhr.open('GET', this.state.image, true); // fetch the blob from uri in async mode
+      xhr.open('GET', uri, true); // fetch the blob from uri in async mode
       xhr.send(null); // no initial data
     });
     var timestamp = new Date().getTime();

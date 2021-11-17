@@ -57,9 +57,14 @@ export default class AddGun extends Component {
       const res = await DocumentPicker.pick({
         type: [DocumentPicker.types.images],
       });
-      this.setState({image: res.uri}, this.uploadmultimedia);
+      res.map(item=>{
+        this.setState({image: item.uri});
+        this.uploadmultimedia(item.uri);
+      })
+      // this.setState({image: res.uri}, this.uploadmultimedia);
 
-      console.log(res.uri);
+      console.log('here',res);
+      return
     } catch (err) {
       if (DocumentPicker.isCancel(err)) {
         // User cancelled the picker, exit any dialogs or menus and move on
@@ -68,9 +73,9 @@ export default class AddGun extends Component {
       }
     }
   };
-  async uploadmultimedia() {
+  async uploadmultimedia(uri) {
     const user = auth().currentUser;
-    console.log(this.state.image);
+    console.log(uri);
     this.setState({loading: true});
     const blob = await new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
@@ -81,7 +86,7 @@ export default class AddGun extends Component {
         reject(new TypeError('Network request failed')); // error occurred, rejecting
       };
       xhr.responseType = 'blob'; // use BlobModule's UriHandler
-      xhr.open('GET', this.state.image, true); // fetch the blob from uri in async mode
+      xhr.open('GET', uri, true); // fetch the blob from uri in async mode
       xhr.send(null); // no initial data
     });
     var imageRef = '';

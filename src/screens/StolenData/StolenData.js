@@ -212,91 +212,8 @@ export default class StolenData extends Component {
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed tempor lorem ut mattis consectetur. Duis suscipit urna vehicula ante luctus sodales sed in nisi.',
     };
   }
-  async htmltopdf() {
-    let options = {
-      // HTML Content for PDF.
-      // I am putting all the HTML code in Single line but if you want to use large HTML code then you can use + Symbol to add them.
-      html: `<h1 style="text-align: center;"><strong>Shooters Ready</strong></h1>
-      <p style=" font-family: courier;",
-     " font-family: verdana;",
-      "font-size: 80%;",
-      "margin-left:10%;">Gun Model: ${this.state.model}</p>
-      <p style=" font-family: courier;",
-      " font-family: verdana;",
-       "font-size: 80%;",
-       "margin-left:10%;">Gun Make: ${this.state.model}</p>
-       <p style=" font-family: courier;",
-       " font-family: verdana;",
-        "font-size: 80%;",
-        "margin-left:10%;">Gun Status: ${this.state.status}</p>
-       <p style=" font-family: courier;",
-       " font-family: verdana;",
-        "font-size: 80%;",
-        "margin-left:10%;">Gun Caliber: ${this.state.caliber}</p>
-        <p style=" font-family: courier;",
-        " font-family: verdana;",
-         "font-size: 80%;",
-         "margin-left:10%;">Gun Serial: ${this.state.serial}</p>
-         <p style=" font-family: courier;",
-         " font-family: verdana;",
-          "font-size: 80%;",
-          "margin-left:10%;">Gun Optic: ${this.state.optic}</p>
-          <p style=" font-family: courier;",
-          " font-family: verdana;",
-           "font-size: 80%;",
-           "margin-left:10%;">Rounds Fired: ${this.state.fire}</p>
-           <p style=" font-family: courier;",
-           " font-family: verdana;",
-            "font-size: 80%;",
-            "margin-left:10%;">Rounds on Hands: ${this.state.hand}</p>
-            <p style=" font-family: courier;",
-            " font-family: verdana;",
-             "font-size: 80%;",
-             "margin-left:10%;">Where it Purchased: ${this.state.Where}</p>
-             <p style=" font-family: courier;",
-             " font-family: verdana;",
-              "font-size: 80%;",
-              "margin-left:10%;">When Purchased: ${this.state.whenPurchase}</p>
-              <p style=" font-family: courier;",
-              " font-family: verdana;",
-               "font-size: 80%;",
-               "margin-left:10%;">Barrel Length: ${this.state.bLength}</p>
-               <p style=" font-family: courier;",
-               " font-family: verdana;",
-                "font-size: 80%;",
-                "margin-left:10%;">Barrel Twist: ${this.state.bTwist}</p>
-                <p style=" font-family: courier;",
-                " font-family: verdana;",
-                 "font-size: 80%;",
-                 "margin-left:10%;">Barrel Manufacture: ${this.state.bManu}</p>
-                 <p style=" font-family: courier;",
-                 " font-family: verdana;",
-                  "font-size: 80%;",
-                  "margin-left:10%;">Notes: ${this.state.details}</p>
-      `,
-      fileName: `${this.state.serial}`,
-
-      //File directory in which the PDF File Will Store.
-      directory: 'Download',
-    };
-
-    let file = await RNHTMLtoPDF.convert(options);
-
-    console.log(file);
-
-    Snackbar.show({
-      text: `Pdf is stored in ${file.filePath}`,
-      backgroundColor: 'black',
-      duration: Snackbar.LENGTH_LONG,
-    });
-
-    this.setState({filePath: file.filePath, show: true});
-    this.handleHelp(file.filePath);
-  }
-  handleHelp(file) {
+  handleHelp() {
     console.log('HERE');
-    // var file = this.state.filePath;
-    console.log('HERE', JSON.stringify(file));
     Mailer.mail(
       {
         subject: 'Shooter Ready',
@@ -304,7 +221,7 @@ export default class StolenData extends Component {
         attachment: [
           {
             // uri: RNFS.ExternalDirectoryPath+file,
-            path: file, // The absolute path of the file from which to read data.
+            // path: file, // The absolute path of the file from which to read data.
             type: '.pdf', // Mime Type: jpg, png, doc, ppt, html, pdf
             name: 'Shooter Ready', // Optional: Custom filename for attachment
           },
@@ -625,7 +542,7 @@ export default class StolenData extends Component {
               }}
               source={button}
               imageStyle={{borderRadius: 10}}>
-              <TouchableOpacity onPress={() => this.htmltopdf()}>
+              <TouchableOpacity onPress={() => this.handleHelp()}>
                 <Text
                   style={{
                     color: 'white',

@@ -66,17 +66,16 @@ class EditProfile extends Component {
       const res = await DocumentPicker.pick({
         type: [DocumentPicker.types.images],
       });
-      this.setState(
-        {imageuri: res.uri, imgName: res.name},
-        this.uploadmultimedia,
-      );
+      res.map(item=>{
+        this.setState({imageuri: item.uri});
+        this.uploadmultimedia(item.uri);
+      })
+      // this.setState(
+      //   {imageuri: res.uri, imgName: res.name},
+      //   this.uploadmultimedia,
+      // );
 
-      console.log(
-        res.uri,
-        res.type, // mime type
-        res.name,
-        res.size,
-      );
+      console.log(res);
     } catch (err) {
       if (DocumentPicker.isCancel(err)) {
         // User cancelled the picker, exit any dialogs or menus and move on
@@ -85,8 +84,8 @@ class EditProfile extends Component {
       }
     }
   };
-  async uploadmultimedia() {
-    console.log(this.state.imageuri);
+  async uploadmultimedia(uri) {
+    console.log(uri);
     const blob = await new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
       xhr.onload = function () {
@@ -96,7 +95,7 @@ class EditProfile extends Component {
         reject(new TypeError('Network request failed')); // error occurred, rejecting
       };
       xhr.responseType = 'blob'; // use BlobModule's UriHandler
-      xhr.open('GET', this.state.imageuri, true); // fetch the blob from uri in async mode
+      xhr.open('GET', uri, true); // fetch the blob from uri in async mode
       xhr.send(null); // no initial data
     });
     var timestamp = new Date().getTime();

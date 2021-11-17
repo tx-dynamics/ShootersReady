@@ -46,7 +46,13 @@ class Login extends Component {
             duration: Snackbar.LENGTH_LONG,
           });
         })
-        .catch(err => alert(err.message));
+        .catch(err => {
+          this.setState({loading: false});
+          Snackbar.show({
+            text:err.message,
+            backgroundColor: 'black',
+          });
+        });
     } else {
       this.setState({loading: false});
       Snackbar.show({

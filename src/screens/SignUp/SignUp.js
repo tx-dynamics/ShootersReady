@@ -47,17 +47,20 @@ class SignUp extends Component {
           AsyncStorage.setItem('password', JSON.stringify(password));
           console.log('email======>', email, '\n password====>', password);
         } catch (error) {
+          this.setState({isLoading: false});
           console.log(error.message);
         }
         this.clickRegister();
         try {
         } catch (err) {
+          this.setState({isLoading: false});
           Snackbar.show({
             text: JSON.stringify(err.message),
             backgroundColor: 'black',
           });
         }
       } else {
+        this.setState({isLoading: false});
         Snackbar.show({
           text: 'Passwords did not match',
           backgroundColor: 'black',
@@ -118,7 +121,11 @@ class SignUp extends Component {
                         this.props.navigation.navigate('Home');
                       })
                       .catch(res => {
-                        alert(res.message);
+                        this.setState({isLoading: false});
+                        Snackbar.show({
+                          text:err.message,
+                          backgroundColor: 'black',
+                        });
                       });
                   });
               });
@@ -127,8 +134,11 @@ class SignUp extends Component {
         .catch(error => {
           var errorMessage = error.message;
           console.log(errorMessage);
-          this.setState({loading: false}, () => {
-            alert(errorMessage);
+          this.setState({isLoading: false}, () => {
+            Snackbar.show({
+              text:errorMessage,
+              backgroundColor: 'black',
+            });
           });
         });
     }

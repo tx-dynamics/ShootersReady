@@ -152,10 +152,8 @@ export default class GunInventDetail extends Component {
     });
     // this.updateImg(id);
   }
-  handleHelp(file) {
+  handleHelp() {
     console.log('HERE');
-    // var file = this.state.filePath;
-    console.log('HERE', JSON.stringify(file));
     Mailer.mail(
       {
         subject: 'Shooter Ready',
@@ -163,7 +161,7 @@ export default class GunInventDetail extends Component {
         attachment: [
           {
             // uri: RNFS.ExternalDirectoryPath+file,
-            path: file, // The absolute path of the file from which to read data.
+            // path: file, // The absolute path of the file from which to read data.
             type: '.pdf', // Mime Type: jpg, png, doc, ppt, html, pdf
             name: 'Shooter Ready', // Optional: Custom filename for attachment
           },
@@ -207,14 +205,10 @@ export default class GunInventDetail extends Component {
       const res = await DocumentPicker.pick({
         type: [DocumentPicker.types.images],
       });
-      this.setState({upimg: res.uri}, this.uploadmultimedia);
-
-      console.log(
-        res.uri,
-        res.type, // mime type
-        res.name,
-        res.size,
-      );
+      res.map(item=>{
+        this.setState({upimg: item.uri});
+        this.uploadmultimedia(item.uri);
+      });
     } catch (err) {
       if (DocumentPicker.isCancel(err)) {
         // User cancelled the picker, exit any dialogs or menus and move on
@@ -223,8 +217,7 @@ export default class GunInventDetail extends Component {
       }
     }
   };
-  async uploadmultimedia() {
-    console.log(this.state.img);
+  async uploadmultimedia(uri) {
     const blob = await new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
       xhr.onload = function () {
@@ -234,7 +227,7 @@ export default class GunInventDetail extends Component {
         reject(new TypeError('Network request failed')); // error occurred, rejecting
       };
       xhr.responseType = 'blob'; // use BlobModule's UriHandler
-      xhr.open('GET', this.state.upimg, true); // fetch the blob from uri in async mode
+      xhr.open('GET', uri, true); // fetch the blob from uri in async mode
       xhr.send(null); // no initial data
     });
     var timestamp = new Date().getTime();
@@ -764,7 +757,7 @@ export default class GunInventDetail extends Component {
               }}
               source={button}
               imageStyle={{borderRadius: 10}}>
-              <TouchableOpacity onPress={() => this.htmltopdf()}>
+              <TouchableOpacity onPress={() => this.handleHelp()}>
                 <Text
                   style={{
                     color: 'white',

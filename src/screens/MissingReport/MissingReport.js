@@ -24,6 +24,7 @@ import RNHTMLtoPDF from 'react-native-html-to-pdf';
 import Snackbar from 'react-native-snackbar';
 import PDFView from 'react-native-view-pdf';
 import Mailer from 'react-native-mail';
+import RNPrint from 'react-native-print';
 export default class MissingReport extends Component {
   constructor(props) {
     super(props);
@@ -102,7 +103,7 @@ export default class MissingReport extends Component {
   }
 
   async htmltopdf() {
-    let options = {
+    let options = await RNPrint.print({
       // HTML Content for PDF.
       // I am putting all the HTML code in Single line but if you want to use large HTML code then you can use + Symbol to add them.
       html: `<h1 style="text-align: center;"><strong>Shooters Ready</strong></h1>
@@ -167,20 +168,9 @@ export default class MissingReport extends Component {
 
       //File directory in which the PDF File Will Store.
       directory: 'Download',
-    };
-
-    let file = await RNHTMLtoPDF.convert(options);
-
-    console.log(file);
-
-    Snackbar.show({
-      text: `Pdf is stored in ${file.filePath}`,
-      backgroundColor: 'black',
-      duration: Snackbar.LENGTH_LONG,
     });
 
-    this.setState({filePath: file.filePath, show: true});
-    // this.handleHelp();
+    console.log(options);
   }
 
   render() {

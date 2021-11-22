@@ -42,13 +42,48 @@ export default class AddGun extends Component {
       bManu: '',
       image: '',
       isLoading: false,
-      status: '',
+      status: '',gid:'',
       notes:'' };
   }
   componentDidMount() {
-    const screen = this.props.navigation.getParam('screen');
+    this.setState({screen: '',
+    make: '',
+    model: '',
+    caliber: '',
+    space: '',
+    serial: '',
+    optic: '',
+    fire: '',
+    hand: '',
+    whenPurchase: '',
+    Where: '',
+    bLength: '',
+    bTwist: '',
+    bManu: '',
+    image: ''});
+    const screen = this.props.navigation?.getParam('screen');
+    const data = this.props.navigation?.getParam('gid');
     console.log(screen);
     this.setState({screen});
+    if(screen==='edit'){
+      this.setState({
+        make: data.make,
+        image: data.img,
+        bLength: data.bLength,
+        bTwist: data.bTwist,
+        notes: data.notes,
+        optic: data.optic,
+        fire: data.fire,
+        hand: data.hand,
+        whenPurchase: data.whenPurchase,
+        Where: data.Where,
+        model: data.model,
+        caliber: data.caliber,
+        serial: data.serial,
+        gid: data.id,
+        upimg: data.img,
+      })
+    }
   }
   imgePicker = async () => {
     try {
@@ -122,7 +157,7 @@ export default class AddGun extends Component {
       bTwist,
       bManu,
       notes,
-      status,
+      status,gid
     } = this.state;
     console.log('image=>>>', image);
 
@@ -143,14 +178,11 @@ export default class AddGun extends Component {
       notes,
     };
     console.log(data.cat);
-    var gundata = [];
+    let gundata = [];
     var curuser = auth().currentUser;
     if (screen === 'gun') {
       gundata = database().ref('users/' + curuser.uid + '/gun/');
-    } else {
-      gundata = database().ref('MissingGun/' + curuser.uid);
-    }
-    gundata
+      gundata
       .push(data)
       .then(res => {
         console.log('====>>>', res);
@@ -165,6 +197,31 @@ export default class AddGun extends Component {
           alert(errorMessage);
         });
       });
+    }else  if (screen === 'edit') {
+    const  gun = database().ref('users/' + curuser.uid + '/gun/'+gid);
+      gun.update(data);
+        this.setState({isLoading: false}, () =>
+          this.props.navigation.navigate('GunProfile'),
+        );
+    } else {
+      gundata = database().ref('MissingGun/' + curuser.uid);
+      gundata
+      .push(data)
+      .then(res => {
+        console.log('====>>>', res);
+        this.setState({isLoading: false}, () =>
+          this.props.navigation.navigate('GunProfile'),
+        );
+      })
+      .catch(error => {
+        var errorMessage = error.message;
+        console.log(errorMessage);
+        this.setState({loading: false}, () => {
+          alert(errorMessage);
+        });
+      });
+    }
+  
   }
 
   render() {

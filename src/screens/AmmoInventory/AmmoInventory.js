@@ -139,7 +139,7 @@ export default class AmmoInventory extends Component {
           <View
             style={{
               marginTop: 20,
-              width: '100%',
+              width: '80%',
               // justifyContent: 'space-around',
               flexDirection: 'row',
               marginBottom: 20,
@@ -171,7 +171,7 @@ export default class AmmoInventory extends Component {
           </View>
 
           <TouchableOpacity
-            style={{alignSelf: 'center'}}
+            style={{alignSelf: 'center',}}
             onPress={() => {
               this.props.navigation.navigate('Addammo');
             }}>
@@ -180,7 +180,7 @@ export default class AmmoInventory extends Component {
                 textAlign: 'center',
                 marginRight: 10,
                 fontWeight: 'bold',
-                fontSize: 16,
+                fontSize: 16,color:'black'
               }}>
               + add
             </Text>

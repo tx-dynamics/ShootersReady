@@ -20,13 +20,13 @@ export default class Addammo extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      caliber: '5.56mm x 45',
-      rounds: '550',
-      fireround: '150',
+      caliber: '',
+      rounds: '',
+      fireround: '',
       ammunation: '',
-      lot: 'HK416',
+      lot: '',
       date: '3/29/2021',
-      remaining: '400',
+      remaining: '',
       isLoading: false,
     };
   }
@@ -51,12 +51,10 @@ export default class Addammo extends Component {
     };
     const user = auth().currentUser.uid;
     const ammo = database().ref('Ammo/' + user);
-    ammo.push(data).then(res => {
-      console.log('====>>>', res);
+    ammo.push(data);
       this.setState({isLoading: false}, () =>
         this.props.navigation.navigate('AmmoInventory'),
       );
-    });
   }
 
   render() {
@@ -87,9 +85,45 @@ export default class Addammo extends Component {
               width: '50%',
             }}
           />
-          <TouchableOpacity activeOpacity={1} style={[styles.button]}>
-            <Text style={[styles.loginText]}>Ammo Inventory</Text>
-          </TouchableOpacity>
+        {/* <View
+          style={{
+            flexDirection: 'row',
+            backgroundColor: 'tomato',
+            width: '60%',
+            alignSelf: 'center',
+            justifyContent:'center',
+          }}> */}
+          <View
+            style={{
+              marginTop: 20,
+              width: '100%',
+              flexDirection: 'row',justifyContent:'center',
+            }}>
+            <ImageBackground
+              style={{
+                flex: 0.55,
+                height: null,
+                width: null,
+                resizeMode: 'cover',
+                borderRadius: 40,
+              }}
+              source={button}
+              imageStyle={{borderRadius: 10}}>
+              <TouchableOpacity activeOpacity={1}>
+                <Text
+                  style={{
+                    color: 'white',
+                    // backgroundColor: '#A50202',
+                    padding: 20,
+                    textAlign: 'center',
+                    // borderRadius: 5,
+                  }}>
+                  Ammo Inventory
+                </Text>
+              </TouchableOpacity>
+            </ImageBackground>
+          </View>
+        {/* </View> */}
         </View>
         <ScrollView style={{flex: 1, flexGrow: 1}}>
           <View
@@ -188,66 +222,6 @@ export default class Addammo extends Component {
             </View>
           </View>
 
-          {/* <View
-            style={{
-              marginTop: 20,
-              width: '100%',
-              justifyContent: 'space-around',
-              flexDirection: 'row',
-              marginBottom: 10,
-            }}>
-            <TouchableOpacity
-              style={{width: '40%'}}
-              onPress={() => {
-                this.props.navigation.navigate('AmmoInventory');
-              }}>
-              <Text
-                style={{
-                  color: 'white',
-                  backgroundColor: theme.colors.gray,
-                  padding: 20,
-                  textAlign: 'center',
-                  borderRadius: 5,
-                }}>
-                Canel
-              </Text>
-            </TouchableOpacity>
-            {this.state.isLoading ? (
-              <ActivityIndicator
-                animating
-                color={'white'}
-                style={{
-                  color: 'white',
-                  backgroundColor: '#A50202',
-                  padding: 20,
-                  textAlign: 'center',
-                  borderRadius: 5,
-                  width: '40%',
-                }}
-              />
-            ) : (
-              <TouchableOpacity
-                style={{width: '40%'}}
-                onPress={() => {
-                  this.setState({isLoading: true}, () => {
-                    // this.props.navigation.navigate('Main');
-                  });
-                  this.addData();
-                }}>
-                <Text
-                  style={{
-                    color: 'white',
-                    backgroundColor: '#A50202',
-                    padding: 20,
-                    textAlign: 'center',
-                    borderRadius: 5,
-                  }}>
-                  + Add
-                </Text>
-              </TouchableOpacity>
-            )}
-          </View>
-         */}
           <View
             style={{
               marginTop: 10,

@@ -194,7 +194,7 @@ export default class GunInventDetail extends Component {
       model: data.model,
       caliber: data.caliber,
       serial: data.serial,
-      gid: data.id,
+      gid: data,
       upimg: data.img,
     });
     console.log('data====>', data);
@@ -681,7 +681,7 @@ export default class GunInventDetail extends Component {
               imageStyle={{borderRadius: 10}}>
               <TouchableOpacity
                 onPress={() => {
-                  this.props.navigation.navigate('AddGun');
+                  this.props.navigation.navigate('AddGun',{screen:'edit',gid});
                 }}>
                 <Text
                   style={{

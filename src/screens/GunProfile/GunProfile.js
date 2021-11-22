@@ -20,14 +20,6 @@ export default class GunProfile extends Component {
     super(props);
     this.state = {
       data: [
-        {id: 0, model: 'M416', serial: '1962 AMC M422A1', img: user},
-        {id: 1, model: 'AKM', serial: '1962 AMC M422A1', img: user},
-        {id: 2, model: 'Thomson', serial: '1962 AMC M422A1', img: user},
-        {id: 2, model: 'Thomson', serial: '1962 AMC M422A1', img: user},
-        {id: 2, model: 'Thomson', serial: '1962 AMC M422A1', img: user},
-        {id: 2, model: 'Thomson', serial: '1962 AMC M422A1', img: user},
-        {id: 2, model: 'Thomson', serial: '1962 AMC M422A1', img: user},
-        {id: 2, model: 'Thomson', serial: '1962 AMC M422A1', img: user},
       ],
     };
   }
@@ -38,7 +30,10 @@ export default class GunProfile extends Component {
     const user = auth().currentUser;
     const data = database().ref('users/' + user.uid + '/gun/');
     data.on('value', userdata => {
-      var dat = [];
+      console.log('here',userdata.hasChildren());
+ if(userdata.hasChildren)
+ {    
+   var dat = [];
       userdata.forEach(child => {
         dat.push({
           id: child.key,
@@ -59,6 +54,7 @@ export default class GunProfile extends Component {
         console.log('dat===>', dat);
         this.setState({data: dat});
       });
+    }
     });
   }
   renderGun = ({item, index}) => {

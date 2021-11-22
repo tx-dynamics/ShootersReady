@@ -68,13 +68,13 @@ export default class GunLoadData extends Component {
   }
   componentDidMount() {
     const user = auth().currentUser.uid;
-    const gid = this.props.navigation.getParam('gid');
-    const item = this.props.navigation.getParam('item');
-    this.setState({uid: user, gid});
-
+    const gid = this.props.navigation?.getParam('gid');
+    const item = this.props.navigation?.getParam('item');
+    this.setState({uid: user, gid:gid?.id});
+console.log(gid?.id,'\n',item);
     if (item) {
       this.setState({itemid: item.id});
-      this.getData(user, gid, item.id);
+      this.getData(user, gid?.id, item.id);
     }
   }
   getData(user, gid, item) {
@@ -231,7 +231,8 @@ export default class GunLoadData extends Component {
     };
     // let productId = this.uniqueID();
     console.log(itemid);
-    if (itemid) {
+    if (itemid) 
+    {
       const load = database().ref(
         'users/' + uid + '/gun/' + gid + '/data/' + itemid + '/load',
       );
@@ -256,13 +257,13 @@ export default class GunLoadData extends Component {
         });
     } else {
       var newPostKey = database()
-        .ref('users/' + uid + '/gun/' + gid)
+        .ref('users/' + auth()?.currentUser?.uid + '/gun/' + gid)
         .child('/data')
         .push().key;
       console.log('post key===\n', newPostKey);
 
       const load = database().ref(
-        'users/' + uid + '/gun/' + gid + '/data/' + newPostKey + '/load',
+        'users/' + auth()?.currentUser?.uid + '/gun/' + gid + '/data/' + newPostKey + '/load',
       );
       load
         .set(data)

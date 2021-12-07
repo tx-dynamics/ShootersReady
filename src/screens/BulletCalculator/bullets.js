@@ -1,4 +1,4 @@
-export const bullets = [
+const bullets = [
   {
     id: '2066',
     bcaliber: '.17 Aguila',
@@ -17672,3 +17672,4 @@ export const bullets = [
     velocity: '1450',
   },
 ];
+export default bullets

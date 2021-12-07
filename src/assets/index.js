@@ -1,6 +1,6 @@
 export const dp = require('./images/user.jpg');
 export const akm = require('./images/akm.png');
-export const m416 = require('./images/m416.png');
+export const m416 = require('./images/m416.jpeg');
 export const shot = require('./images/shot.png');
 export const tommy = require('./images/tommy.png');
 export const scral = require('./images/scral.png');

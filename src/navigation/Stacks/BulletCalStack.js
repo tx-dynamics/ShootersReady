@@ -1,4 +1,5 @@
 import {createStackNavigator} from 'react-navigation-stack';
+import AddBullets from '../../screens/AddBullets';
 import BulletCalculator from '../../screens/BulletCalculator';
 import BulletGraph from '../../screens/BulletGraph';
 const BulletCal = createStackNavigator(
@@ -11,6 +12,12 @@ const BulletCal = createStackNavigator(
     },
     BulletGraph: {
       screen: BulletGraph,
+      navigationOptions: {
+        headerShown: false,
+      },
+    },
+    addbullet: {
+      screen: AddBullets,
       navigationOptions: {
         headerShown: false,
       },

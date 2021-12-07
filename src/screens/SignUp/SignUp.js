@@ -16,6 +16,7 @@ import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import {Header, Divider} from 'react-native-elements';
 import {logo, button} from '../../assets';
+import bullets from '../BulletCalculator/bullets';
 class SignUp extends Component {
   constructor(props) {
     super(props);
@@ -33,6 +34,22 @@ class SignUp extends Component {
   onSignup = async () => {
     const {pNo, fName, email, password, cnfrmPswrd, lname} = this.state;
     console.log(fName, email, password, cnfrmPswrd, lname);
+    try{
+      try {
+        const myArray = await AsyncStorage.getItem('bullets');
+        if (myArray !== null) {
+          // We have data!!
+          console.log(JSON.parse(myArray));
+        }
+        else{
+          await AsyncStorage.setItem('data', JSON.stringify(bullets));
+        }
+      } catch (error) {
+        // Error retrieving data
+      }
+    }catch(err){
+
+    }
 
     if (
       fName !== '' &&

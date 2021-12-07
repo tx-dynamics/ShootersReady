@@ -15,6 +15,7 @@ import auth from '@react-native-firebase/auth';
 import Snackbar from 'react-native-snackbar';
 import theme from '../../theme';
 import {logo, button} from '../../assets';
+import bullets from '../BulletCalculator/bullets';
 class Login extends Component {
   constructor(props) {
     super(props);
@@ -22,11 +23,24 @@ class Login extends Component {
   }
   componentDidMount() {}
 
-  login = () => {
+  login =async () => {
     const {email, password} = this.state;
     const user = auth().currentUser;
+    try {
+      const myArray = await AsyncStorage.getItem('bullets');
+      if (myArray !== null) {
+        // We have data!!
+        console.log(JSON.parse(myArray));
+      }
+      else {
+        await AsyncStorage.setItem('data', JSON.stringify(bullets));
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
     if (email !== '' && password !== '') {
       try {
+       
         AsyncStorage.setItem('email', JSON.stringify(email));
         AsyncStorage.setItem('password', JSON.stringify(password));
         console.log('email======>', email, '\n password====>', password);

@@ -13,7 +13,7 @@ import {
 import styles from './styles';
 import theme from '../../theme';
 import {Header, Divider} from 'react-native-elements';
-import {user, button} from '../../assets';
+import {user, button,m416} from '../../assets';
 import HeaderCenterComponent from '../../components/HeaderCenterComponent';
 import HeaderLeftComponent from '../../components/HeaderLeftComponent';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -299,12 +299,13 @@ export default class AddGun extends Component {
           <TouchableOpacity onPress={this.imgePicker}>
             <ImageBackground
               borderRadius={10}
+              resizeMode='contain'
               source={
                 this.state.image
                   ? {
                       uri: `${this.state.image}`,
                     }
-                  : user
+                  : m416
               }
               style={styles.userImgStyle}>
               <Ionicons name="camera" size={24} color="white" />

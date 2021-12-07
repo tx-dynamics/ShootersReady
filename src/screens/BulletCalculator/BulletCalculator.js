@@ -6,7 +6,7 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  View,
+  View,AsyncStorage
 } from 'react-native';
 import React, {useEffect} from 'react';
 
@@ -14,27 +14,30 @@ import {Ballistics as Ballistic} from './ballistics';
 import HeaderCenterComponent from '../../components/HeaderCenterComponent';
 import HeaderLeftComponent from '../../components/HeaderLeftComponent';
 import {Picker} from '@react-native-picker/picker';
-import {bullets} from './bullets';
+import bullets from './bullets';
 import {button} from '../../assets';
 import styles from './styles';
 import theme from '../../theme';
 import {useState} from 'react';
-
+//firebase
+import auth from '@react-native-firebase/auth';
+import database from '@react-native-firebase/database';
 var find = require('lodash.find');
-let Calibers = Object.values(
-  bullets.reduce((a, {bcaliber, ...props}) => {
-    if (!a[bcaliber]) {
-      a[bcaliber] = Object.assign({}, {bcaliber, bullets: [props]});
-    } else {
-      a[bcaliber].bullets.push(props);
-    }
-    return a;
-  }, {}),
-);
-
 // console.log(JSON.stringify(result));
 function BulletCalculator({navigation}) {
+  const[Bullets,setbullets]=useState(bullets);
   const [selectedCaliber, setSelectedCaliber] = useState(null);
+  const [add, setadd] = useState(false);
+  let Calibers = Object.values(
+    Bullets.reduce((a, {bcaliber, ...props}) => {
+      if (!a[bcaliber]) {
+        a[bcaliber] = Object.assign({}, {bcaliber, bullets: [props]});
+      } else {
+        a[bcaliber].bullets.push(props);
+      }
+      return a;
+    }, {}),
+  );
   const emptyBullet = {
     id: '',
     name: '',
@@ -43,6 +46,10 @@ function BulletCalculator({navigation}) {
     velocity: '',
   };
   const [selectedBullet, setSelectedBullet] = useState(emptyBullet);
+  const [bulletData, setbulletData] = useState();
+  const [balisticCoef, setbalisticCoef] = useState();
+  const [velocity, setvelocity] = useState();
+  const [bweight, setbweight] = useState();
   const resetBullet = () => {
     setSelectedBullet(emptyBullet);
   };
@@ -156,29 +163,48 @@ function BulletCalculator({navigation}) {
     }
   };
   const bulletChanged = async value => {
-    console.log('Bullet Changed ', value);
+    // console.log('Bullet Changed ', find(Bullets, {id: value}));
     if (!value) {
       setSelectedBullet(emptyBullet);
     } else {
-      setSelectedBullet(find(bullets, {id: value}));
+      const res=find(Bullets, {id: value});
+      console.log('res',res);
+      setbweight(res?.grains);
+      setvelocity(res?.coeff);
+      setbalisticCoef(res?.coeff);
+      setbulletData(find(Bullets, {id: value}));
+      setSelectedBullet(find(Bullets, {id: value}));
     }
   };
-  // useEffect(() => {
-  //   if (selectedBullet) {
-  //     console.log('updating fields');
-  //     let newBullet = find(bullets, {id: selectedBullet});
-  //     setForm({
-  //       ...form,
-  //       BulletWeight: newBullet.grains,
-  //       BallisticCoefficient: newBullet.coeff,
-  //       InitialVelocity: newBullet.velocity,
-  //     });
-  //     console.log(form);
-  //   }
-  // }, [selectedBullet]);
-  // useEffect(() => {
-  //   calculateBallistics(1);
-  // }, [selectedBullet, form]);
+  useEffect(() => {
+    setvelocity('');
+    setbweight('');
+    setbalisticCoef('');
+    resetBullet();
+    getData();
+  }, []);
+ async function getData(){
+    try {
+      const myArray = await AsyncStorage.getItem('bullets');
+      console.log('here', JSON.parse(myArray));
+      setbullets(bullets);
+      if (myArray !== null) {
+        console.log('here', JSON.parse(myArray));
+        setbullets(JSON.parse(myArray));
+      } else {
+        console.log('else', JSON.parse(myArray));
+        setbullets(bullets);
+      }
+    } catch (error) {
+      console.log('here',error.message);
+      // Error retrieving data
+    }
+  
+    //  Array.prototype.push.apply(Bullets, arr);
+    //  console.log('[...Bullets,arr]',Bullets);
+    
+    
+  }
   return (
     <View style={{flex: 1, backgroundColor: 'white'}}>
       <Header
@@ -254,6 +280,7 @@ function BulletCalculator({navigation}) {
               placeholder={'Select Stores'}
               onValueChange={value => {
                 setSelectedCaliber(find(Calibers, {bcaliber: value}));
+                console.log('bullet',find(Calibers, {bcaliber: value}));
                 resetBullet();
               }}>
               {Calibers &&
@@ -393,7 +420,8 @@ function BulletCalculator({navigation}) {
                 onPress={() => {
                   setSelectedCaliber(null);
                   resetBullet();
-                }}>
+                }}
+                >
                 <Text
                   style={{
                     color: 'white',
@@ -444,6 +472,50 @@ function BulletCalculator({navigation}) {
                     fontWeight: 'bold',
                   }}>
                   Calculate
+                </Text>
+              </TouchableOpacity>
+            </ImageBackground>
+          </View>
+        </View>
+        <View
+          style={{
+            width: '100%',
+            marginTop: 20,
+            marginBottom: 10,
+            paddingHorizontal: 10,
+          }}>
+          <View
+            style={{
+              width: '100%',
+              alignItems: 'flex-start',
+            }}>
+            <ImageBackground
+              style={{
+                height: null,
+                width: '100%',
+                resizeMode: 'cover',
+                borderRadius: 40,
+              }}
+              source={button}
+              imageStyle={{borderRadius: 10}}>
+              <TouchableOpacity
+                // style={{width: '50%'}}
+                onPress={() => {
+                navigation.navigate('addbullet')
+                }}
+                // onPress={()=>{onaddBullet(),setadd(!add)}}
+                >
+                <Text
+                  style={{
+                    color: 'white',
+                    // backgroundColor: theme.colors.primary,
+                    padding: 20,
+                    textAlign: 'center',
+                    borderRadius: 5,
+                    fontSize: 16,
+                    fontWeight: 'bold',
+                  }}>
+                  Add Bullet
                 </Text>
               </TouchableOpacity>
             </ImageBackground>

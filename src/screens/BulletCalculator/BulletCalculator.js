@@ -495,7 +495,7 @@ function BulletCalculator({navigation}) {
               <TouchableOpacity
                 // style={{width: '50%'}}
                 onPress={() => {
-                navigation.navigate('addbullet')
+                navigation.push('addbullet')
                 }}
                 // onPress={()=>{onaddBullet(),setadd(!add)}}
                 >

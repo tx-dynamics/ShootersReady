@@ -45,18 +45,19 @@ async  function onaddBullet(){
         bcaliber
      
       };
-    const dates= await AsyncStorage.getItem('bullets');
+    const dates= await AsyncStorage.getItem('code');
     const dat=JSON.parse(dates);
     
     if(dat!==null)
-      {  setbulletData([...dat, bullet]);
+      {  
+        setbulletData([...dat, bullet]);
         console.log('notnull',[...dat, bullet]);
-      }else{
+      } else {
         console.log('bulletData',bulletData);
         setbulletData([...bullets,bullet])
       }
        
-     await AsyncStorage.setItem('bullets',dat!==null? JSON.stringify([...dat, bullet]):JSON.stringify(bullets));
+    await AsyncStorage.setItem('code',dat!==null? JSON.stringify([...dat, bullet]):JSON.stringify(bullets));
         navigation.push('BulletCalculator');
       } catch (error) {
         console.log(error.message);
@@ -70,6 +71,14 @@ async  function onaddBullet(){
           });
     }
   };
+  useEffect(() => {
+    setvelocity('');
+    setbweight('');
+    setbalisticCoef('');
+    setname('');
+    setbcaliber('');
+   
+  }, []);
   return (
     <View style={{flex: 1, backgroundColor: 'white'}}>
       <Header

@@ -9,7 +9,7 @@ import {
   View,AsyncStorage
 } from 'react-native';
 import React, {useEffect} from 'react';
-
+import {useIsFocused} from 'react-navigation';
 import {Ballistics as Ballistic} from './ballistics';
 import HeaderCenterComponent from '../../components/HeaderCenterComponent';
 import HeaderLeftComponent from '../../components/HeaderLeftComponent';
@@ -19,13 +19,10 @@ import {button} from '../../assets';
 import styles from './styles';
 import theme from '../../theme';
 import {useState} from 'react';
-//firebase
-import auth from '@react-native-firebase/auth';
-import database from '@react-native-firebase/database';
 var find = require('lodash.find');
 // console.log(JSON.stringify(result));
 function BulletCalculator({navigation}) {
-  const[Bullets,setbullets]=useState(bullets);
+  const [Bullets, setbullets] = useState(bullets);
   const [selectedCaliber, setSelectedCaliber] = useState(null);
   const [add, setadd] = useState(false);
   let Calibers = Object.values(
@@ -177,26 +174,23 @@ function BulletCalculator({navigation}) {
     }
   };
   useEffect(() => {
-    setvelocity('');
-    setbweight('');
-    setbalisticCoef('');
     resetBullet();
     getData();
-  }, []);
- async function getData(){
+  }, [useIsFocused]);
+  async function getData() {
     try {
-      const myArray = await AsyncStorage.getItem('bullets');
-      console.log('here', JSON.parse(myArray));
-      setbullets(bullets);
+      const myArray = await AsyncStorage.getItem('code');
+      console.log('myArray', JSON.parse(myArray));
       if (myArray !== null) {
-        console.log('here', JSON.parse(myArray));
+        console.log('myArray', JSON.parse(myArray));
         setbullets(JSON.parse(myArray));
       } else {
-        console.log('else', JSON.parse(myArray));
+        await AsyncStorage.setItem('code', JSON.stringify(bullets));
+        console.log('bullets');
         setbullets(bullets);
       }
     } catch (error) {
-      console.log('here',error.message);
+      console.log('error', error.message);
       // Error retrieving data
     }
   

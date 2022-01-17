@@ -1,3 +1,6 @@
+/* eslint-disable prettier/prettier */
+/* eslint-disable keyword-spacing */
+/* eslint-disable space-infix-ops */
 import {Divider, Header} from 'react-native-elements';
 import {
   ImageBackground,
@@ -28,6 +31,8 @@ function AddBullets({navigation}) {
   const [bweight, setbweight] = useState('');
   const [bcaliber, setbcaliber] = useState('');
   const [name, setname] = useState('');
+  const [id, setid] = useState('');
+  const [found, setfound] = useState(false);
 async  function onaddBullet(){
       if(balisticCoef!==''&& velocity!==''&&bweight!==''&&bcaliber!==''&&name!=='')
    { var newPostKey = database()
@@ -36,20 +41,27 @@ async  function onaddBullet(){
     .push().key;
     try {
       console.log('post key===\n', newPostKey);
+      if(found){
+        const dates= await AsyncStorage.getItem('code');
+        const dat=JSON.parse(dates);
+        const items=dat.filter(el => el.id !== id);
+        await AsyncStorage.setItem('code',dat!==null? JSON.stringify(items):JSON.stringify(bullets));
+        console.log(dat?.length);
+      }
       const bullet = {
         id: newPostKey,
         name,
         grains: bweight,
         coeff: balisticCoef,
         velocity,
-        bcaliber
-     
+        bcaliber,
+        edit:true,
       };
     const dates= await AsyncStorage.getItem('code');
     const dat=JSON.parse(dates);
-    
+    console.log(dat?.length);
     if(dat!==null)
-      {  
+      { 
         setbulletData([...dat, bullet]);
         console.log('notnull',[...dat, bullet]);
       } else {
@@ -77,7 +89,17 @@ async  function onaddBullet(){
     setbalisticCoef('');
     setname('');
     setbcaliber('');
-   
+    console.log(navigation?.getParam('data'));
+    const data=navigation?.getParam('data');
+    if(data){
+      setvelocity(data?.velocity);
+    setbweight(data?.grains);
+    setbalisticCoef(data?.coeff);
+    setname(data?.name);
+    setbcaliber(data?.bcaliber);
+    setid(data?.id);
+    setfound(true);
+    }
   }, []);
   return (
     <View style={{flex: 1, backgroundColor: 'white'}}>
@@ -270,7 +292,7 @@ async  function onaddBullet(){
                     fontSize: 16,
                     fontWeight: 'bold',
                   }}>
-                  Add Bullet
+               {found ?'Edit Bullet': `Add Bullet`}
                 </Text>
               </TouchableOpacity>
             </ImageBackground>

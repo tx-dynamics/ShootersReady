@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import {Divider, Header} from 'react-native-elements';
 import {
   ImageBackground,
@@ -19,12 +20,17 @@ import {button} from '../../assets';
 import styles from './styles';
 import theme from '../../theme';
 import {useState} from 'react';
+import Snackbar from 'react-native-snackbar';
 var find = require('lodash.find');
 // console.log(JSON.stringify(result));
 function BulletCalculator({navigation}) {
   const [Bullets, setbullets] = useState(bullets);
   const [selectedCaliber, setSelectedCaliber] = useState(null);
-  const [add, setadd] = useState(false);
+  const [dels, setdels] = useState(false);
+  const [select, setselect] = useState(false);
+  const [delId, setdelId] = useState();
+  const [data, setdata] = useState();
+  const [name, setname] = useState();
   let Calibers = Object.values(
     Bullets.reduce((a, {bcaliber, ...props}) => {
       if (!a[bcaliber]) {
@@ -50,23 +56,6 @@ function BulletCalculator({navigation}) {
   const resetBullet = () => {
     setSelectedBullet(emptyBullet);
   };
-  // const [form, setForm] = useState({
-  //   Altitude: 0,
-  //   AtmosphericPressure: 29.53,
-  //   BallisticCoefficient: '0.105',
-  //   BulletWeight: '20',
-  //   DistanceStep: 50,
-  //   DistanceToShow: 500,
-  //   DragFunction: 'G1',
-  //   InitialVelocity: '1850',
-  //   RelativeHumidity: 78,
-  //   ShootingAngle: 0,
-  //   SightHeightOverBore: 1.5,
-  //   Temperature: 59,
-  //   WindAngle: 0,
-  //   WindVelocity: 0,
-  //   ZeroRange: '100',
-  // });
   const onChange = (field, value) => {
     setSelectedBullet({
       ...selectedBullet,
@@ -160,18 +149,52 @@ function BulletCalculator({navigation}) {
     }
   };
   const bulletChanged = async value => {
-    // console.log('Bullet Changed ', find(Bullets, {id: value}));
+    console.log('Bullet Changed ', find(Bullets, {id: value}));
     if (!value) {
       setSelectedBullet(emptyBullet);
     } else {
       const res=find(Bullets, {id: value});
-      console.log('res',res);
+      setdata(find(Bullets, {id: value}));
+      setselect(true);
+      setdelId(value);
+      setdels(res?.edit?true:false)
       setbweight(res?.grains);
-      setvelocity(res?.coeff);
+      setvelocity(res?.velocity);
       setbalisticCoef(res?.coeff);
       setbulletData(find(Bullets, {id: value}));
       setSelectedBullet(find(Bullets, {id: value}));
     }
+  };
+  const deleteBullet = async()  => {
+    if(dels)
+   {
+     console.log('delId',delId,dels);
+     Snackbar.show({
+      text:"Bullet Deleted Succesfully",
+      backgroundColor: 'black',
+    });
+    const items=Bullets.filter(el => el.id !== delId);
+    setbullets(items);
+    console.log('res',items);
+    setdelId('');
+     AsyncStorage.setItem('code', JSON.stringify(items));
+  } else{
+    Snackbar.show({
+      text:"You can only delete your bullet",
+      backgroundColor: 'red',
+    });
+  }
+  // setSelectedCaliber
+  const myArray = await AsyncStorage.getItem('code');
+  if (myArray !== null) {
+    console.log('myArray====>', JSON.parse(myArray));
+    setSelectedCaliber(JSON.parse(myArray));
+  }
+  setTimeout(() => {
+    setdelId('');
+    setselect(false);
+    setSelectedBullet(emptyBullet);
+  }, 300);
   };
   useEffect(() => {
     resetBullet();
@@ -180,24 +203,16 @@ function BulletCalculator({navigation}) {
   async function getData() {
     try {
       const myArray = await AsyncStorage.getItem('code');
-      console.log('myArray', JSON.parse(myArray));
       if (myArray !== null) {
-        console.log('myArray', JSON.parse(myArray));
+        console.log('myArray====>', JSON.parse(myArray));
         setbullets(JSON.parse(myArray));
       } else {
         await AsyncStorage.setItem('code', JSON.stringify(bullets));
-        console.log('bullets');
         setbullets(bullets);
       }
     } catch (error) {
       console.log('error', error.message);
-      // Error retrieving data
     }
-  
-    //  Array.prototype.push.apply(Bullets, arr);
-    //  console.log('[...Bullets,arr]',Bullets);
-    
-    
   }
   return (
     <View style={{flex: 1, backgroundColor: 'white'}}>
@@ -274,6 +289,8 @@ function BulletCalculator({navigation}) {
               placeholder={'Select Stores'}
               onValueChange={value => {
                 setSelectedCaliber(find(Calibers, {bcaliber: value}));
+                const res=find(Calibers, {bcaliber: value});
+                setname(res?.bcaliber);
                 console.log('bullet',find(Calibers, {bcaliber: value}));
                 resetBullet();
               }}>
@@ -472,21 +489,102 @@ function BulletCalculator({navigation}) {
           </View>
         </View>
         <View
-          style={{
-            width: '100%',
-            marginTop: 20,
-            marginBottom: 10,
-            paddingHorizontal: 10,
-          }}>
+         style={{
+          flexDirection: 'row',
+          width: '100%',
+          marginTop: 20,
+          marginBottom: 10,
+          paddingHorizontal: 10,justifyContent:'space-between'
+        }}>
           <View
             style={{
-              width: '100%',
+              width: '50%',
               alignItems: 'flex-start',
             }}>
             <ImageBackground
               style={{
+                flex: 0.4,
                 height: null,
-                width: '100%',
+                width: null,
+                resizeMode: 'cover',
+                borderRadius: 40,
+              }}
+              source={button}
+              imageStyle={{borderRadius: 10}}>
+              <TouchableOpacity
+               disabled={dels?false:true}
+                onPress={() => {
+                navigation.push('addbullet',{data})
+                }}
+                // onPress={()=>{onaddBullet(),setadd(!add)}}
+                >
+                <Text
+                  style={{
+                    color: 'white',
+                    // backgroundColor: theme.colors.primary,
+                    padding: 20,
+                    textAlign: 'center',
+                    borderRadius: 5,
+                    fontSize: 16,
+                    fontWeight: 'bold',
+                  }}>
+                  Edit Bullet
+                </Text>
+              </TouchableOpacity>
+            </ImageBackground>
+          </View>
+          <View
+            style={{
+              width: '26%',
+            }}>
+            <ImageBackground
+              style={{
+                flex: 0.4,
+                height: null,
+                width: null,
+                resizeMode: 'cover',
+                borderRadius: 40,
+              }}
+              source={button}
+              imageStyle={{borderRadius: 10}}>
+              <TouchableOpacity
+              disabled={select?false:true}
+                // style={{width: '50%'}}
+                onPress={deleteBullet}>
+                <Text
+                  style={{
+                    color: 'white',
+                    // backgroundColor: theme.colors.primary,
+                    padding: 20,
+                    textAlign: 'center',
+                    borderRadius: 5,
+                    fontSize: 16,
+                    fontWeight: 'bold',
+                  }}>
+                  Delete
+                </Text>
+              </TouchableOpacity>
+            </ImageBackground>
+          </View>
+        </View>
+        <View
+         style={{
+          flexDirection: 'row',
+          width: '100%',
+          marginTop: 20,
+          marginBottom: 10,
+          paddingHorizontal: 10,justifyContent:'space-between'
+        }}>
+          <View
+            style={{
+              width: '100%',
+              // alignItems: 'flex-start',
+            }}>
+            <ImageBackground
+              style={{
+                flex: 0.4,
+                height: null,
+                width: null,
                 resizeMode: 'cover',
                 borderRadius: 40,
               }}

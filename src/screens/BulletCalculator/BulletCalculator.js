@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 /* eslint-disable prettier/prettier */
 import {Divider, Header} from 'react-native-elements';
 import {
@@ -28,6 +29,7 @@ function BulletCalculator({navigation}) {
   const [selectedCaliber, setSelectedCaliber] = useState(null);
   const [dels, setdels] = useState(false);
   const [select, setselect] = useState(false);
+  const [ecal, setecal] = useState(false);
   const [delId, setdelId] = useState();
   const [data, setdata] = useState();
   const [name, setname] = useState();
@@ -153,6 +155,7 @@ function BulletCalculator({navigation}) {
     if (!value) {
       setSelectedBullet(emptyBullet);
     } else {
+      setecal(true);
       const res=find(Bullets, {id: value});
       setdata(find(Bullets, {id: value}));
       setselect(true);
@@ -197,6 +200,7 @@ function BulletCalculator({navigation}) {
   }, 300);
   };
   useEffect(() => {
+    setecal(false);
     resetBullet();
     getData();
   }, [useIsFocused]);
@@ -431,6 +435,7 @@ function BulletCalculator({navigation}) {
                 onPress={() => {
                   setSelectedCaliber(null);
                   resetBullet();
+                  setecal(false);
                 }}
                 >
                 <Text
@@ -465,6 +470,7 @@ function BulletCalculator({navigation}) {
               imageStyle={{borderRadius: 10}}>
               <TouchableOpacity
                 // style={{width: '50%'}}
+                disabled={!ecal?true:false}
                 onPress={() => {
                   calculateBallistics(1);
                   navigation.navigate('BulletGraph', {
